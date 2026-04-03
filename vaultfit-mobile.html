@@ -3039,8 +3039,7 @@ function mRenderWeeklyVolumeChart() {
   el.innerHTML = MUSCLES.map(muscle => {
     const done = sets[muscle] || 0;
     const target = PT_TARGETS[muscle] || 10;
-    const pct = Math.min(100, Math.round((done / target) * 100));
-    const barWidth = Math.min(100, Math.round((done / Math.max(maxSets, target)) * 100));
+    const barWidth = Math.min(100, Math.round((done / target) * 100));
     const color = done >= target ? 'var(--accent)' : done >= target * 0.6 ? '#ffb800' : done >= target * 0.3 ? 'var(--accent2)' : 'var(--border)';
     return `<div style="margin-bottom:9px;">
       <div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:3px;">
