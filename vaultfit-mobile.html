@@ -264,6 +264,14 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);overs
       </div>
     </div>
     <div class="quick-log-section">
+      <!-- Home tab toggle: Log / Overview -->
+      <div style="display:flex;gap:0;border-radius:10px;overflow:hidden;border:1px solid var(--border);margin-bottom:14px;">
+        <button id="m-home-tab-log" onclick="mHomeTab('log')" style="flex:1;font-family:'Oswald',sans-serif;font-weight:700;font-size:0.75rem;letter-spacing:0.1em;text-transform:uppercase;padding:10px;border:none;cursor:pointer;background:var(--accent);color:#000;transition:all 0.15s;">Log</button>
+        <button id="m-home-tab-overview" onclick="mHomeTab('overview')" style="flex:1;font-family:'Oswald',sans-serif;font-weight:700;font-size:0.75rem;letter-spacing:0.1em;text-transform:uppercase;padding:10px;border:none;cursor:pointer;background:var(--surface2);color:var(--muted);transition:all 0.15s;">Overview</button>
+      </div>
+
+      <!-- LOG SECTION -->
+      <div id="m-home-log-section">
       <div class="section-title">Log Today's Workout</div>
       <!-- Workout stopwatch — counts up, fully independent of rest countdown timer -->
       <div class="sw-bar">
@@ -277,19 +285,23 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);overs
         </div>
       </div>
       <div class="workout-meta-row">
-        <input class="form-input" id="m-wname" placeholder="Workout name…" style="border-radius:8px;padding:11px 13px;font-size:0.88rem;">
-        <div><div class="mini-label">Body kg</div><input class="mini-input" id="m-bw" type="number" placeholder="70" min="30" max="300"></div>
-        <div><div class="mini-label">Mins</div><input class="mini-input" id="m-dur" type="number" placeholder="45" min="1"></div>
+        <input class="form-input" id="m-wname" placeholder="Workout name…" style="border-radius:8px;padding:11px 13px;font-size:0.88rem;width:100%;">
+        <input type="hidden" id="m-bw">
+        <input type="hidden" id="m-dur">
       </div>
       <div id="m-ex-rows"></div>
       <button class="btn-add-ex" onclick="mAddRow()">+ Add Exercise</button>
-      <div class="m-rpe-row" id="m-rpe-row">
-        <div class="m-rpe-label">Session RPE (1=easy · 10=max effort):</div>
+      <div class="m-rpe-row" id="m-rpe-row" style="margin-top:14px;padding-top:14px;border-top:1px solid var(--border);">
+        <div class="m-rpe-label" style="font-size:0.72rem;color:var(--text);font-weight:600;margin-bottom:6px;">How hard was this session?</div>
         <button class="m-rpe-btn" data-rpe="1" onclick="mSetRPE(1)">1</button><button class="m-rpe-btn" data-rpe="2" onclick="mSetRPE(2)">2</button><button class="m-rpe-btn" data-rpe="3" onclick="mSetRPE(3)">3</button><button class="m-rpe-btn" data-rpe="4" onclick="mSetRPE(4)">4</button><button class="m-rpe-btn" data-rpe="5" onclick="mSetRPE(5)">5</button><button class="m-rpe-btn" data-rpe="6" onclick="mSetRPE(6)">6</button><button class="m-rpe-btn" data-rpe="7" onclick="mSetRPE(7)">7</button><button class="m-rpe-btn" data-rpe="8" onclick="mSetRPE(8)">8</button><button class="m-rpe-btn" data-rpe="9" onclick="mSetRPE(9)">9</button><button class="m-rpe-btn" data-rpe="10" onclick="mSetRPE(10)">10</button>
-        <div id="m-rpe-tip" style="font-size:0.66rem;color:var(--muted);width:100%;margin-top:3px;"></div>
+        <div id="m-rpe-tip" style="font-size:0.68rem;color:var(--muted);width:100%;margin-top:4px;"></div>
       </div>
-      <button class="btn-primary" style="width:100%;margin-bottom:8px;" onclick="mSaveWorkout()">Save Workout</button>
+      <button class="btn-primary" style="width:100%;margin-top:12px;margin-bottom:8px;" onclick="mSaveWorkout()">Save Workout</button>
       <button class="btn-secondary" style="width:100%;margin-bottom:16px;border-color:var(--accent);color:var(--accent);" onclick="mOpenBuildModal()">⚡ Build Workout</button>
+      </div><!-- end log section -->
+
+      <!-- OVERVIEW SECTION -->
+      <div id="m-home-overview-section" style="display:none;">
       <div class="card" style="margin-bottom:12px;">
         <div class="card-title">This Week</div>
         <div class="week-row" id="m-week-bars"></div>
@@ -299,23 +311,53 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);overs
         <div class="card-title">Personal Records 🏆</div>
         <div id="m-prs"><div class="empty-state" style="padding:16px 0;"><p>Log workouts to set PRs</p></div></div>
       </div>
+      <!-- 1RM Calculator -->
+      <div class="card" style="margin-top:12px;">
+        <div class="card-title">🏋️ 1RM Calculator</div>
+        <div style="display:flex;gap:7px;margin-bottom:10px;align-items:flex-end;">
+          <div class="form-group" style="margin:0;flex:2;">
+            <label class="form-label">Exercise</label>
+            <input class="form-input" id="m-orm-ex" list="m-ex-suggestions" placeholder="e.g. DB Bent-Over Row" style="font-size:0.82rem;padding:9px 10px;" oninput="mCalc1RM()">
+          </div>
+          <div class="form-group" style="margin:0;flex:1;">
+            <label class="form-label">Weight kg</label>
+            <input class="form-input" id="m-orm-wt" type="number" min="1" step="0.5" placeholder="50" style="font-size:0.82rem;padding:9px 10px;" oninput="mCalc1RM()">
+          </div>
+          <div class="form-group" style="margin:0;width:60px;">
+            <label class="form-label">Reps</label>
+            <input class="form-input" id="m-orm-reps" type="number" min="1" max="30" placeholder="8" style="font-size:0.82rem;padding:9px 10px;" oninput="mCalc1RM()">
+          </div>
+        </div>
+        <div id="m-orm-result" style="display:none;background:var(--surface2);border-radius:8px;padding:12px 14px;">
+          <div style="display:flex;justify-content:space-between;align-items:center;">
+            <div>
+              <div style="font-size:0.68rem;color:var(--muted);text-transform:uppercase;letter-spacing:0.08em;">Estimated 1RM</div>
+              <div style="font-family:'Oswald',sans-serif;font-weight:700;font-size:1.8rem;color:var(--accent);" id="m-orm-val">—</div>
+            </div>
+            <div id="m-orm-std" style="text-align:right;"></div>
+          </div>
+          <div style="margin-top:8px;padding-top:8px;border-top:1px solid var(--border);" id="m-orm-pcts"></div>
+        </div>
+      </div>
       <div class="card" style="margin-top:12px;">
         <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;">
           <div class="card-title" style="margin-bottom:0;">Muscle Recovery</div>
           <div style="font-size:0.62rem;color:var(--muted);">Last 7 days</div>
         </div>
         <div id="m-muscle-recovery"></div>
-        <!-- Legend -->
+        <!-- Legend (collapsed by default) -->
         <div style="margin-top:10px;padding-top:10px;border-top:1px solid var(--border);">
-          <div style="font-family:'Oswald',sans-serif;font-weight:700;font-size:0.6rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--muted);margin-bottom:7px;">Status Guide</div>
-          <div style="display:flex;flex-direction:column;gap:5px;">
-            <div style="display:flex;align-items:center;gap:8px;font-size:0.74rem;"><div style="width:10px;height:10px;border-radius:50%;background:var(--green);flex-shrink:0;"></div><span style="color:var(--green);font-family:'Oswald',sans-serif;font-weight:700;font-size:0.7rem;letter-spacing:0.06em;text-transform:uppercase;width:58px;flex-shrink:0;">Fresh</span><span style="color:var(--muted);">Not trained this week — fully recovered</span></div>
-            <div style="display:flex;align-items:center;gap:8px;font-size:0.74rem;"><div style="width:10px;height:10px;border-radius:50%;background:var(--green);flex-shrink:0;"></div><span style="color:var(--green);font-family:'Oswald',sans-serif;font-weight:700;font-size:0.7rem;letter-spacing:0.06em;text-transform:uppercase;width:58px;flex-shrink:0;">Ready</span><span style="color:var(--muted);">72 h+ since last session — good to train</span></div>
-            <div style="display:flex;align-items:center;gap:8px;font-size:0.74rem;"><div style="width:10px;height:10px;border-radius:50%;background:var(--accent2);flex-shrink:0;"></div><span style="color:var(--accent2);font-family:'Oswald',sans-serif;font-weight:700;font-size:0.7rem;letter-spacing:0.06em;text-transform:uppercase;width:58px;flex-shrink:0;">Recover</span><span style="color:var(--muted);">48–72 h — still recovering, avoid heavy load</span></div>
-            <div style="display:flex;align-items:center;gap:8px;font-size:0.74rem;"><div style="width:10px;height:10px;border-radius:50%;background:#ffb800;flex-shrink:0;"></div><span style="color:#ffb800;font-family:'Oswald',sans-serif;font-weight:700;font-size:0.7rem;letter-spacing:0.06em;text-transform:uppercase;width:58px;flex-shrink:0;">Worked</span><span style="color:var(--muted);">24–48 h — rest recommended</span></div>
-            <div style="display:flex;align-items:center;gap:8px;font-size:0.74rem;"><div style="width:10px;height:10px;border-radius:50%;background:var(--red);flex-shrink:0;"></div><span style="color:var(--red);font-family:'Oswald',sans-serif;font-weight:700;font-size:0.7rem;letter-spacing:0.06em;text-transform:uppercase;width:58px;flex-shrink:0;">Taxed</span><span style="color:var(--muted);">Trained in last 24 h — needs full rest</span></div>
+          <button onclick="this.nextElementSibling.style.display=this.nextElementSibling.style.display==='none'?'block':'none';this.textContent=this.textContent.includes('▶')?'▼ Hide guide':'▶ How to read this';" style="background:none;border:none;color:var(--muted);font-size:0.68rem;cursor:pointer;padding:0;font-family:'Inter',sans-serif;">▶ How to read this</button>
+          <div style="display:none;margin-top:8px;">
+            <div style="display:flex;flex-direction:column;gap:5px;">
+              <div style="display:flex;align-items:center;gap:8px;font-size:0.74rem;"><div style="width:10px;height:10px;border-radius:50%;background:var(--green);flex-shrink:0;"></div><span style="color:var(--green);font-family:'Oswald',sans-serif;font-weight:700;font-size:0.7rem;letter-spacing:0.06em;text-transform:uppercase;width:58px;flex-shrink:0;">Fresh</span><span style="color:var(--muted);">Not trained this week</span></div>
+              <div style="display:flex;align-items:center;gap:8px;font-size:0.74rem;"><div style="width:10px;height:10px;border-radius:50%;background:var(--green);flex-shrink:0;"></div><span style="color:var(--green);font-family:'Oswald',sans-serif;font-weight:700;font-size:0.7rem;letter-spacing:0.06em;text-transform:uppercase;width:58px;flex-shrink:0;">Ready</span><span style="color:var(--muted);">72h+ since last session</span></div>
+              <div style="display:flex;align-items:center;gap:8px;font-size:0.74rem;"><div style="width:10px;height:10px;border-radius:50%;background:var(--accent2);flex-shrink:0;"></div><span style="color:var(--accent2);font-family:'Oswald',sans-serif;font-weight:700;font-size:0.7rem;letter-spacing:0.06em;text-transform:uppercase;width:58px;flex-shrink:0;">Recover</span><span style="color:var(--muted);">48–72h — avoid heavy load</span></div>
+              <div style="display:flex;align-items:center;gap:8px;font-size:0.74rem;"><div style="width:10px;height:10px;border-radius:50%;background:#ffb800;flex-shrink:0;"></div><span style="color:#ffb800;font-family:'Oswald',sans-serif;font-weight:700;font-size:0.7rem;letter-spacing:0.06em;text-transform:uppercase;width:58px;flex-shrink:0;">Worked</span><span style="color:var(--muted);">24–48h — rest recommended</span></div>
+              <div style="display:flex;align-items:center;gap:8px;font-size:0.74rem;"><div style="width:10px;height:10px;border-radius:50%;background:var(--red);flex-shrink:0;"></div><span style="color:var(--red);font-family:'Oswald',sans-serif;font-weight:700;font-size:0.7rem;letter-spacing:0.06em;text-transform:uppercase;width:58px;flex-shrink:0;">Taxed</span><span style="color:var(--muted);">Trained in last 24h</span></div>
+            </div>
+            <div style="font-size:0.67rem;color:var(--muted);margin-top:8px;line-height:1.5;">Bar = weekly sets vs PT target. Teal = on track, amber = building, red = needs work.</div>
           </div>
-          <div style="font-size:0.68rem;color:var(--muted);margin-top:8px;line-height:1.5;padding-top:7px;border-top:1px solid var(--border);">The <strong style="color:var(--text);">bar</strong> shows your weekly sets vs your PT target for each muscle. Full bar = target reached. Colour shows how close you are — teal = on track, amber = building, red = needs work.</div>
         </div>
       </div>
       <!-- Today's Workout Grade -->
@@ -328,6 +370,15 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);overs
           <div style="color:var(--muted);font-size:0.8rem;">Log a workout to receive your PT grade.</div>
         </div>
       </div>
+      <!-- Weekly Volume by Muscle -->
+      <div class="card" style="margin-top:12px;">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
+          <div class="card-title" style="margin-bottom:0;">Weekly Volume by Muscle</div>
+          <div style="font-size:0.62rem;color:var(--muted);">Sets vs target</div>
+        </div>
+        <div id="m-weekly-volume-chart"></div>
+      </div>
+      </div><!-- end overview section -->
     </div>
   </div>
   <!-- EXERCISES -->
@@ -348,9 +399,10 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);overs
   <div id="page-plans" class="page">
     <div class="page-header" style="display:flex;justify-content:space-between;align-items:center;padding-bottom:0;"><div><h1>Plans</h1><p style="margin-bottom:0;">Expert &amp; custom programmes</p></div></div>
     <div class="plan-tabs">
-      <button class="plan-tab active" onclick="mSwitchPlanTab('expert',this)">Expert</button>
+      <button class="plan-tab active" onclick="mSwitchPlanTab('expert',this)">Expert Plans</button>
       <button class="plan-tab" onclick="mSwitchPlanTab('mine',this)">My Plans <span id="m-plan-badge" style="display:none;background:var(--accent);color:#000;font-size:0.55rem;padding:1px 5px;border-radius:8px;margin-left:3px;font-family:'Oswald',sans-serif;font-weight:700;"></span></button>
     </div>
+    <div style="padding:8px 14px 0;font-size:0.75rem;color:var(--muted);line-height:1.5;" id="m-plan-tab-desc">Follow a structured programme — loads exercises directly into your log.</div>
     <div id="m-plan-tab-expert" class="plan-tab-content active"><div class="plan-cards" id="m-expert-plans"></div></div>
     <div id="m-plan-tab-mine" class="plan-tab-content"><div class="plan-cards" id="m-my-plans"></div></div>
   </div>
@@ -367,6 +419,7 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);overs
         <div class="card-title">⭐ Favourite Exercises</div>
         <div id="m-favs-list"></div>
       </div>
+
       <!-- Body Metrics -->
       <div class="card" style="margin-bottom:10px;">
         <div class="card-title">📊 Body Metrics</div>
@@ -425,8 +478,41 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);overs
   <button class="nav-tab" id="tab-plans" onclick="mShowPage('plans')"><span class="tab-icon">📅</span><span class="tab-label">Plans</span></button>
   <button class="nav-tab" id="tab-profile" onclick="mShowPage('profile')"><span class="tab-icon">👤</span><span class="tab-label">Profile</span></button>
 </nav>
-<button class="timer-fab" onclick="mOpenModal('m-timer-modal')" style="right:80px;" title="Rest Timer">⏱</button>
-<button id="m-wake-btn" class="timer-fab" onclick="mToggleWakeLock()" title="Keep screen on" style="right:18px;font-size:1rem;">☀️</button>
+<button class="timer-fab" onclick="mOpenModal('m-timer-modal')" style="right:88px;width:auto;border-radius:24px;padding:0 12px;gap:5px;flex-direction:row;font-family:'Oswald',sans-serif;font-weight:700;font-size:0.62rem;letter-spacing:0.06em;" title="Rest Timer"><span>⏱</span><span>REST</span></button>
+<button id="m-wake-btn" class="timer-fab" onclick="mToggleWakeLock()" title="Keep screen on" style="right:18px;width:auto;border-radius:24px;padding:0 12px;gap:5px;flex-direction:row;font-family:'Oswald',sans-serif;font-weight:700;font-size:0.62rem;letter-spacing:0.06em;"><span>☀️</span><span>WAKE</span></button>
+
+<!-- FIRST RUN GUIDE -->
+<div class="modal-overlay" id="m-firstrun-modal" style="display:none;">
+  <div class="modal-sheet">
+    <div class="modal-handle"></div>
+    <div class="modal-hdr">
+      <div class="modal-title">Welcome to HomeBody 💪</div>
+    </div>
+    <div class="modal-body" style="padding-top:6px;">
+      <div style="display:flex;flex-direction:column;gap:16px;">
+        <div style="display:flex;gap:14px;align-items:flex-start;">
+          <div style="width:36px;height:36px;border-radius:10px;background:rgba(0,229,200,0.12);border:1px solid rgba(0,229,200,0.3);display:flex;align-items:center;justify-content:center;font-size:1.1rem;flex-shrink:0;">🏠</div>
+          <div><div style="font-family:'Oswald',sans-serif;font-weight:700;font-size:0.9rem;color:var(--text);margin-bottom:3px;">Log your workout</div><div style="font-size:0.8rem;color:var(--muted);line-height:1.5;">Tap <strong style="color:var(--text);">Home → Log</strong> to add exercises and save your session. Use ⚡ Build Workout if you want a session built for you.</div></div>
+        </div>
+        <div style="display:flex;gap:14px;align-items:flex-start;">
+          <div style="width:36px;height:36px;border-radius:10px;background:rgba(0,229,200,0.12);border:1px solid rgba(0,229,200,0.3);display:flex;align-items:center;justify-content:center;font-size:1.1rem;flex-shrink:0;">📊</div>
+          <div><div style="font-family:'Oswald',sans-serif;font-weight:700;font-size:0.9rem;color:var(--text);margin-bottom:3px;">Track your progress</div><div style="font-size:0.8rem;color:var(--muted);line-height:1.5;">Tap <strong style="color:var(--text);">Home → Overview</strong> after your workout to see your recovery status, PRs, workout grade, and weekly volume.</div></div>
+        </div>
+        <div style="display:flex;gap:14px;align-items:flex-start;">
+          <div style="width:36px;height:36px;border-radius:10px;background:rgba(0,229,200,0.12);border:1px solid rgba(0,229,200,0.3);display:flex;align-items:center;justify-content:center;font-size:1.1rem;flex-shrink:0;">👤</div>
+          <div><div style="font-family:'Oswald',sans-serif;font-weight:700;font-size:0.9rem;color:var(--text);margin-bottom:3px;">Set up your profile</div><div style="font-size:0.8rem;color:var(--muted);line-height:1.5;">Tap <strong style="color:var(--text);">Profile</strong> to enter your name, weight, and goal. This personalises your calorie estimates and workout grade.</div></div>
+        </div>
+        <div style="display:flex;gap:14px;align-items:flex-start;">
+          <div style="width:36px;height:36px;border-radius:10px;background:rgba(0,229,200,0.12);border:1px solid rgba(0,229,200,0.3);display:flex;align-items:center;justify-content:center;font-size:1.1rem;flex-shrink:0;">💪</div>
+          <div><div style="font-family:'Oswald',sans-serif;font-weight:700;font-size:0.9rem;color:var(--text);margin-bottom:3px;">Browse exercises</div><div style="font-size:0.8rem;color:var(--muted);line-height:1.5;">Tap <strong style="color:var(--text);">Exercises</strong> to browse 160+ exercises with full instructions. Tap <strong style="color:var(--accent);">+ Add</strong> to add any exercise directly to your current workout.</div></div>
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-primary" style="width:100%;" onclick="document.getElementById('m-firstrun-modal').style.display='none';localStorage.setItem('hb_seen_guide','1');">Let's go →</button>
+    </div>
+  </div>
+</div>
 <div class="toast-container" id="m-toasts"></div>
 <!-- IMPORT CONFIRM MODAL -->
 <div class="modal-overlay" id="m-import-modal" onclick="mCloseModal('m-import-modal',event)">
@@ -654,7 +740,24 @@ const EXERCISES = [
   { name: 'KB Push Press', muscle: 'Shoulders', equip: 'Kettlebell', diff: 'Intermediate', icon: '⚡', desc: 'Leg-assisted overhead press for power' },
   { name: 'KB Bent-Over Row', muscle: 'Back', equip: 'Kettlebell', diff: 'Beginner', icon: '🚣', desc: 'Horizontal pull in hinge position' },
   { name: 'KB Renegade Row', muscle: 'Back', equip: 'Kettlebell', diff: 'Advanced', icon: '🔥', desc: 'Plank row with anti-rotation demand' },
-  { name: 'KB Halo', muscle: 'Shoulders', equip: 'Kettlebell', diff: 'Beginner', icon: '😇', desc: 'Shoulder mobility and stability circle' },
+  { name: 'DB Pullover', muscle: 'Back', equip: 'Dumbbell', diff: 'Beginner', icon: '🦅', desc: 'Lying across bench, lower dumbbell behind head — lats and serratus stretch and contraction' },
+  { name: 'DB Chest-Supported Row', muscle: 'Back', equip: 'Dumbbell', diff: 'Beginner', icon: '🚣', desc: 'Lie face-down on incline bench, row dumbbells to hips — removes lower back from the equation' },
+  { name: 'DB Seal Row', muscle: 'Back', equip: 'Dumbbell', diff: 'Beginner', icon: '🚣', desc: 'Prone row on elevated flat bench — strict horizontal pull with zero body english' },
+  { name: 'DB Straight-Arm Pulldown', muscle: 'Back', equip: 'Dumbbell', diff: 'Beginner', icon: '⬇️', desc: 'Standing, hinge forward, pull dumbbells down toward hips with straight arms — lat isolation' },
+  { name: 'DB Gorilla Row', muscle: 'Back', equip: 'Dumbbell', diff: 'Intermediate', icon: '🦍', desc: 'Hinged stance with dumbbells on floor, alternate rowing each side — heavy bilateral pull' },
+  { name: 'KB Gorilla Row', muscle: 'Back', equip: 'Kettlebell', diff: 'Intermediate', icon: '🦍', desc: 'Hinged stance over two kettlebells, alternate rowing each side — loaded hip hinge plus horizontal pull' },
+  { name: 'Inverted Row', muscle: 'Back', equip: 'Bodyweight', diff: 'Beginner', icon: '🔄', desc: 'Lie under a bar or table edge, pull chest to bar — horizontal pull accessible for all levels' },
+  { name: 'Pull-Up', muscle: 'Back', equip: 'Bodyweight', diff: 'Intermediate', icon: '⬆️', desc: 'Overhand grip vertical pull — the gold standard back width builder' },
+  { name: 'Chin-Up', muscle: 'Back', equip: 'Bodyweight', diff: 'Intermediate', icon: '⬆️', desc: 'Underhand grip vertical pull — more bicep involvement than pull-up, great for beginners' },
+  { name: 'Superman', muscle: 'Back', equip: 'Bodyweight', diff: 'Beginner', icon: '🦸', desc: 'Lie face-down, raise arms and legs simultaneously — lower back and posterior chain activation' },
+
+  { name: 'DB Y-Raise', muscle: 'Back', equip: 'Dumbbell', diff: 'Beginner', icon: '🦾', desc: 'Prone on incline bench, raise arms into Y shape — lower trap and rotator cuff health' },
+  { name: 'DB W-Raise', muscle: 'Back', equip: 'Dumbbell', diff: 'Beginner', icon: '🦾', desc: 'Prone W-shape raise with external rotation — rear delt, mid and lower trap activation' },
+  { name: 'DB Prone Row', muscle: 'Back', equip: 'Dumbbell', diff: 'Beginner', icon: '🚣', desc: 'Chest-supported on incline bench, row both dumbbells — removes lower back involvement' },
+  { name: 'DB Shrug to Row', muscle: 'Back', equip: 'Dumbbell', diff: 'Intermediate', icon: '🔄', desc: 'Upright shrug transitioning into a high pull — traps, rear delts and upper back' },
+  { name: 'KB Deadlift', muscle: 'Back', equip: 'Kettlebell', diff: 'Beginner', icon: '🏋️', desc: 'Hip hinge pulling kettlebell from floor — posterior chain foundation movement' },
+  { name: 'Back Extension', muscle: 'Back', equip: 'Bodyweight', diff: 'Beginner', icon: '🌉', desc: 'Prone hip extension off the floor or bench — erector spinae and posterior chain' },
+  { name: 'Resistance Band Pull-Apart', muscle: 'Back', equip: 'Bodyweight', diff: 'Beginner', icon: '↔️', desc: 'Pull a band apart at chest height — rear delts, rhomboids and mid-trap health' },  { name: 'KB Halo', muscle: 'Shoulders', equip: 'Kettlebell', diff: 'Beginner', icon: '😇', desc: 'Shoulder mobility and stability circle' },
   { name: 'KB Floor Press', muscle: 'Chest', equip: 'Kettlebell', diff: 'Beginner', icon: '💪', desc: 'Chest press from floor with KB' },
   { name: 'KB Curl', muscle: 'Biceps', equip: 'Kettlebell', diff: 'Beginner', icon: '💪', desc: 'Bicep curl with kettlebell handle' },
   { name: 'KB Tricep Extension', muscle: 'Triceps', equip: 'Kettlebell', diff: 'Beginner', icon: '⬆️', desc: 'Overhead tricep extension with KB' },
@@ -1195,7 +1298,8 @@ function saveWorkout() {
   renderWeekBars();
   renderPRs();
   const volStr = totalVol > 0 ? ` · ${totalVol.toLocaleString()} kg` : '';
-  toast(`✓ "${name}" saved — ${calories} kcal burned${volStr}`, 'success');
+  const cRangeD = calcCalorieRange(exercises, bodyWt, estDuration);
+  toast(`✓ "${name}" saved — ~${cRangeD.low}–${cRangeD.high} kcal (estimate)${volStr}`, 'success');
 }
 
 function updateDashboardStats() {
@@ -1430,7 +1534,7 @@ const MET_VALUES = {
   // Kettlebell exercises
   'KB Swing': 9.8, 'KB Turkish Get-Up': 7.0, 'KB Clean': 7.0, 'KB Snatch': 9.0,
   'KB Clean & Press': 7.5, 'KB Thruster': 8.0, 'KB Around the World': 4.0,
-  'KB Press': 3.5, 'KB Push Press': 5.0, 'KB Bent-Over Row': 3.5,
+  'KB Press': 3.5, 'KB Push Press': 5.0, 'KB Bent-Over Row': 3.5, 'DB Pullover': 3.5, 'DB Chest-Supported Row': 4.0, 'DB Seal Row': 4.0, 'DB Straight-Arm Pulldown': 3.5, 'DB Gorilla Row': 5.0, 'KB Gorilla Row': 5.0, 'Inverted Row': 4.5, 'Pull-Up': 5.0, 'Chin-Up': 5.0, 'Superman': 3.0,
   'KB Renegade Row': 5.0, 'KB Halo': 3.0, 'KB Floor Press': 3.0,
   'KB Curl': 2.5, 'KB Tricep Extension': 2.5,
   'KB Goblet Squat': 5.0, 'KB Sumo Deadlift': 5.0, 'KB Single-Leg Deadlift': 4.5,
@@ -2359,6 +2463,10 @@ function persistLoad() {
 
 // ─── CALORIE CALC ───
 function calcCalories(exercises, bwKg, durMins) {
+  // Returns a rounded midpoint estimate. For display use calcCalorieRange().
+  // MET-based resistance training estimates carry ±30% uncertainty — never show as exact.
+  // MET values are designed for aerobic exercise and overestimate resistance training.
+  // We apply a 0.6–1.0 multiplier range to give an honest low/high estimate.
   const bw = bwKg || 70; let total = 0;
   exercises.forEach(e => {
     const met = MET_VALUES[e.name] || 4.0;
@@ -2369,8 +2477,26 @@ function calcCalories(exercises, bwKg, durMins) {
     const est = exercises.reduce((s,e) => s + (e.trackType==='time' ? (e.sets*e.time)/60 : e.sets*(e.reps||0)*3/60 + Math.max(0,e.sets-1)), 0);
     total *= durMins / Math.max(est, 1);
   }
-  return Math.round(total);
+  // Return midpoint for storage; use calcCalorieRange() for display
+  return Math.round(total * 0.8);
 }
+function calcCalorieRange(exercises, bwKg, durMins) {
+  const bw = bwKg || 70; let total = 0;
+  exercises.forEach(e => {
+    const met = MET_VALUES[e.name] || 4.0;
+    const mins = e.trackType === 'time' ? (e.sets * e.time) / 60 : e.sets * (e.reps||0) * 3 / 60 + Math.max(0, e.sets-1);
+    total += met * bw * (mins / 60);
+  });
+  if (durMins && total > 0) {
+    const est = exercises.reduce((s,e) => s + (e.trackType==='time' ? (e.sets*e.time)/60 : e.sets*(e.reps||0)*3/60 + Math.max(0,e.sets-1)), 0);
+    total *= durMins / Math.max(est, 1);
+  }
+  return { low: Math.round(total * 0.6), high: Math.round(total * 1.0) };
+}
+
+// ─── CALORIE RANGE ───
+// Resistance training calorie estimates via MET are inherently imprecise (±25–35%).
+// We show an honest range rather than false single-figure precision.
 
 // ─── HELPERS ───
 function escHtml(s) { return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
@@ -2410,8 +2536,9 @@ function mRenderHome() {
   let chk = today.getTime();
   while (days.has(chk)) { streak++; chk -= 86400000; }
   document.getElementById('hm-streak').textContent = streak;
-  mRenderWeekBars(); mRenderPRs(); mRenderMuscleRecovery(); mRenderWorkoutGrade();
-  if (state.profile?.weight) { const el=document.getElementById('m-bw'); if(el&&!el.value) el.value=state.profile.weight; }
+  mRenderWeekBars(); mRenderPRs(); mRenderMuscleRecovery(); mRenderWorkoutGrade(); mRenderWeeklyVolumeChart();
+  // Auto-populate hidden body weight field from profile
+  const bwEl=document.getElementById('m-bw'); if(bwEl) bwEl.value=state.profile?.weight||70;
   const rows = document.getElementById('m-ex-rows');
   if (!rows.children.length) { mAddRow(); mAddRow(); }
   // populate datalist
@@ -2444,7 +2571,24 @@ function mRenderPRs() {
   const prs=Object.entries(state.personalRecords);
   const el=document.getElementById('m-prs');
   if (!prs.length) { el.innerHTML='<div class="empty-state" style="padding:10px 0;"><p>Log workouts to set PRs</p></div>'; return; }
-  el.innerHTML=prs.slice(0,5).map(([ex,pr])=>`<div class="pr-item"><div class="pr-name">${escHtml(ex)}</div><div class="pr-val">${pr.value}<span class="pr-unit">${pr.unit}</span></div></div>`).join('');
+  const bw = state.profile?.weight || 70;
+  el.innerHTML=prs.slice(0,8).map(([ex,pr])=>{
+    // Find the best logged set for this exercise to get reps for 1RM calc
+    let bestReps = 1;
+    for (const w of state.workouts) {
+      const e = w.exercises.find(x=>x.name===ex);
+      if (e && e.weight===pr.value && e.reps>0) { bestReps=e.reps; break; }
+    }
+    const orm = pr.unit==='kg' ? calcEpley1RM(pr.value, bestReps) : null;
+    const std = orm ? getStrengthLevel(ex, orm, bw) : null;
+    return `<div class="pr-item">
+      <div>
+        <div class="pr-name">${escHtml(ex)}</div>
+        ${orm && orm !== pr.value ? `<div style="font-size:0.68rem;color:var(--muted);margin-top:1px;">e1RM: <span style="color:var(--accent);font-weight:600;">${orm}kg</span>${std?` · <span style="color:${std.color}">${std.level}</span>`:''}</div>` : ''}
+      </div>
+      <div class="pr-val">${pr.value}<span class="pr-unit">${pr.unit}</span></div>
+    </div>`;
+  }).join('');
 }
 
 function mRenderMuscleRecovery() {
@@ -2580,7 +2724,8 @@ function mSaveWorkout() {
   document.querySelectorAll('.m-rpe-btn').forEach(b=>{b.classList.remove('active');b.style.background='';b.style.borderColor='';b.style.color='';});
   const mRt=document.getElementById('m-rpe-tip'); if(mRt)mRt.textContent='';
   mRenderHome();
-  mToast(`✓ "${name}" saved — ${calories} kcal`,'success');
+  const cRange=calcCalorieRange(exercises,bw,dur||null);
+  mToast(`✓ "${name}" saved — ~${cRange.low}–${cRange.high} kcal (estimate)`,'success');
 }
 
 // ─── EXERCISES ───
@@ -2792,7 +2937,7 @@ function mRenderLog() {
       </div>
       <div class="log-entry-stats">
         <div class="log-mini"><span>${w.totalSets}</span> sets</div>
-        <div class="log-mini"><span class="orange">${w.calories||0}</span> kcal</div>
+        <div class="log-mini"><span class="orange">~${Math.round((w.calories||0)*0.75/5)*5}–${Math.round((w.calories||0)*1.3/5)*5}</span> kcal</div>
         ${w.duration?`<div class="log-mini"><span>${w.duration}</span> min</div>`:''}
         ${w.totalVolume>0?`<div class="log-mini"><span>${w.totalVolume>999?(w.totalVolume/1000).toFixed(1)+'k':w.totalVolume}</span> kg vol</div>`:''}
       </div>
@@ -2803,6 +2948,111 @@ function mRenderLog() {
 
 // ─── SHOW WORKOUT OVERLAY ───
 // mShowWorkout — see implementation below
+
+
+// ─── 1RM & STRENGTH STANDARDS ───
+const STRENGTH_STANDARDS = {
+  // [beginner, novice, intermediate, advanced] as bodyweight multipliers
+  // Dumbbell — each hand, so effective total load is 2× listed value
+  'DB Goblet Squat':          [0.3, 0.5,  0.7,  1.0 ],
+  'DB Romanian Deadlift':     [0.4, 0.6,  0.9,  1.2 ],
+  'DB Stiff-Leg Deadlift':    [0.4, 0.6,  0.9,  1.2 ],
+  'DB Overhead Press':        [0.15,0.25, 0.35, 0.5 ],
+  'DB Shoulder Press':        [0.15,0.25, 0.35, 0.5 ],
+  'DB Arnold Press':          [0.15,0.25, 0.35, 0.5 ],
+  'DB Bench Press':           [0.25,0.4,  0.55, 0.75],
+  'DB Floor Press':           [0.2, 0.35, 0.5,  0.7 ],
+  'DB Incline Press':         [0.2, 0.35, 0.5,  0.7 ],
+  'DB Single-Arm Row':        [0.2, 0.3,  0.45, 0.6 ],
+  'DB Bent-Over Row':         [0.3, 0.5,  0.7,  1.0 ],
+  'DB Chest-Supported Row':   [0.25,0.4,  0.6,  0.85],
+  'DB Seal Row':              [0.25,0.4,  0.6,  0.85],
+  'DB Meadows Row':           [0.2, 0.35, 0.55, 0.75],
+  'DB Bulgarian Split Squat': [0.2, 0.35, 0.55, 0.8 ],
+  'DB Split Squat':           [0.2, 0.35, 0.55, 0.8 ],
+  'DB Hip Thrust':            [0.5, 0.8,  1.1,  1.5 ],
+  'DB Lateral Raise':         [0.05,0.1,  0.15, 0.25],
+  'DB Bicep Curl':            [0.1, 0.15, 0.2,  0.3 ],
+  'DB Hammer Curl':           [0.1, 0.15, 0.2,  0.3 ],
+  'DB Skull Crusher':         [0.1, 0.2,  0.3,  0.4 ],
+  // Kettlebell
+  'KB Swing':                 [0.2, 0.35, 0.5,  0.7 ],
+  'KB Clean & Press':         [0.2, 0.3,  0.45, 0.6 ],
+  'KB Goblet Squat':          [0.25,0.4,  0.6,  0.85],
+  'KB Deadlift':              [0.4, 0.6,  0.9,  1.3 ],
+  'KB Romanian Deadlift':     [0.4, 0.6,  0.9,  1.2 ],
+  'KB Press':                 [0.15,0.25, 0.35, 0.5 ],
+  'KB Push Press':            [0.2, 0.3,  0.45, 0.6 ],
+  // Bodyweight — ratios represent added load / bodyweight; base = 0
+  'Pull-Up':                  [0.0, 0.0,  0.1,  0.3 ],
+  'Chin-Up':                  [0.0, 0.0,  0.1,  0.3 ],
+  'Push-Up':                  [0.0, 0.0,  0.0,  0.15],
+  'Dip':                      [0.0, 0.0,  0.1,  0.3 ],
+  'Pistol Squat':             [0.0, 0.0,  0.0,  0.15],
+};
+
+function calcEpley1RM(weight, reps) {
+  if (!weight || weight <= 0 || !reps || reps <= 0) return null;
+  if (reps === 1) return weight;
+  return Math.round(weight * (1 + reps / 30));
+}
+
+function getStrengthLevel(exName, orm, bodyweight) {
+  const standards = STRENGTH_STANDARDS[exName];
+  if (!standards || !orm || !bodyweight) return null;
+  const ratio = orm / bodyweight;
+  if (ratio >= standards[3]) return { level: 'Elite',        color: '#00d68f' };
+  if (ratio >= standards[2]) return { level: 'Advanced',     color: '#00e5c8' };
+  if (ratio >= standards[1]) return { level: 'Intermediate', color: '#4da6ff' };
+  if (ratio >= standards[0]) return { level: 'Novice',       color: '#ffb800' };
+  return { level: 'Beginner', color: '#6a8099' };
+}
+
+
+// ─── WEEKLY VOLUME BY MUSCLE CHART ───
+function mRenderWeeklyVolumeChart() {
+  const el = document.getElementById('m-weekly-volume-chart');
+  if (!el) return;
+
+  const MUSCLES = ['Back','Chest','Shoulders','Arms','Core','Quads','Glutes','Hamstrings','Calves'];
+  const PT_TARGETS = { Back:14, Chest:10, Shoulders:12, Arms:10, Core:10, Quads:14, Glutes:12, Hamstrings:10, Calves:12 };
+
+  const now = Date.now();
+  const sevenDays = 7 * 86400000;
+  const sets = {};
+  MUSCLES.forEach(m => sets[m] = 0);
+
+  state.workouts
+    .filter(w => now - new Date(w.date).getTime() < sevenDays)
+    .forEach(w => {
+      w.exercises.forEach(e => {
+        const found = EXERCISES.find(x => x.name === e.name);
+        if (!found) return;
+        const m = found.muscle;
+        const grp = (m==='Biceps'||m==='Triceps') ? 'Arms' : (m==='Rear Delts' ? 'Shoulders' : m);
+        if (sets[grp] !== undefined) sets[grp] += (e.sets || 0);
+      });
+    });
+
+  const maxSets = Math.max(...Object.values(sets), 1);
+
+  el.innerHTML = MUSCLES.map(muscle => {
+    const done = sets[muscle] || 0;
+    const target = PT_TARGETS[muscle] || 10;
+    const pct = Math.min(100, Math.round((done / target) * 100));
+    const barWidth = Math.min(100, Math.round((done / Math.max(maxSets, target)) * 100));
+    const color = done >= target ? 'var(--accent)' : done >= target * 0.6 ? '#ffb800' : done >= target * 0.3 ? 'var(--accent2)' : 'var(--border)';
+    return `<div style="margin-bottom:9px;">
+      <div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:3px;">
+        <span style="font-size:0.72rem;font-weight:500;color:var(--text);">${muscle}</span>
+        <span style="font-size:0.68rem;color:var(--muted);">${done}<span style="color:var(--border);">/${target}</span></span>
+      </div>
+      <div style="height:6px;background:var(--surface2);border-radius:3px;overflow:hidden;">
+        <div style="height:100%;width:${barWidth}%;background:${color};border-radius:3px;transition:width 0.4s ease;"></div>
+      </div>
+    </div>`;
+  }).join('') + `<div style="font-size:0.65rem;color:var(--muted);margin-top:8px;">Sets this week vs PT weekly targets</div>`;
+}
 
 // ─── PLANS ───
 function mRenderPlans() {
@@ -2823,6 +3073,10 @@ function mSwitchPlanTab(tab,btn) {
   document.querySelectorAll('.plan-tab').forEach(t=>t.classList.remove('active'));
   document.querySelectorAll('.plan-tab-content').forEach(t=>t.classList.remove('active'));
   btn.classList.add('active'); document.getElementById('m-plan-tab-'+tab).classList.add('active');
+  const desc = document.getElementById('m-plan-tab-desc');
+  if (desc) desc.textContent = tab==='expert'
+    ? 'Follow a structured programme — loads exercises directly into your log.'
+    : 'Your custom plans — save workout templates you can reuse anytime.';
   if(tab==='mine') mRenderMyPlans();
 }
 function mRenderMyPlans() {
@@ -3036,8 +3290,9 @@ function gradeWorkout(workout) {
   else if (totalSets>60)                   scores.volume=6;
   else                                     scores.volume=3;
 
-  // 2. EXERCISE MIX (10 pts) — muscle group variety quality
-  // Count groups that received ≥2 sets (meaningful stimulus)
+  // 2. EXERCISE MIX (10 pts) — variety quality OR focused session detection
+  // A focused session (one muscle ≥70% of sets, ≥12 total sets) is a legitimate
+  // training approach and is graded on its own terms — not penalised for low variety.
   const setsPerMuscle={};
   ex.forEach(e=>{
     const found=EXERCISES.find(x=>x.name===e.name);
@@ -3049,19 +3304,46 @@ function gradeWorkout(workout) {
   const wellWorked=Object.values(setsPerMuscle).filter(s=>s>=2).length;
   const totalMuscles=Object.keys(setsPerMuscle).length;
   const maxSets=Math.max(...Object.values(setsPerMuscle),0);
-  const dominated=totalSets>0&&(maxSets/totalSets)>0.6;
-  if      (wellWorked>=4&&!dominated) scores.count=10;
-  else if (wellWorked>=3&&!dominated) scores.count=8;
-  else if (wellWorked>=2)             scores.count=5;
-  else if (wellWorked===1&&totalSets>=10) scores.count=7;
-  else                                scores.count=3;
+  const dominanceRatio=totalSets>0?maxSets/totalSets:0;
+  const isFocused=dominanceRatio>=0.70&&totalSets>=12;
+  if (isFocused) {
+    // Grade focused session on volume depth: ≥16 sets on one muscle = excellent specialisation
+    if      (totalSets>=20) scores.count=10;
+    else if (totalSets>=16) scores.count=9;
+    else if (totalSets>=12) scores.count=8;
+    else                    scores.count=6;
+  } else {
+    const dominated=dominanceRatio>0.6;
+    if      (wellWorked>=4&&!dominated) scores.count=10;
+    else if (wellWorked>=3&&!dominated) scores.count=8;
+    else if (wellWorked>=2)             scores.count=5;
+    else                                scores.count=3;
+  }
 
-  // 3. MUSCLE BALANCE (20 pts) — distinct muscle groups trained
-  const mc=totalMuscles;
-  if      (mc>=4) scores.balance=20;
-  else if (mc===3) scores.balance=15;
-  else if (mc===2) scores.balance=9;
-  else             scores.balance=4;
+  // 3. MUSCLE BALANCE (20 pts)
+  // For focused sessions, reward exercise variety within the target muscle instead of
+  // penalising for intentionally low muscle group count.
+  if (isFocused) {
+    // Count distinct exercises in the dominant muscle group — variety within specialisation
+    const dominantMuscle = Object.entries(setsPerMuscle).sort((a,b)=>b[1]-a[1])[0]?.[0];
+    const distinctEx = new Set(ex.filter(e=>{
+      const f=EXERCISES.find(x=>x.name===e.name);
+      if(!f)return false;
+      const g=(f.muscle==='Biceps'||f.muscle==='Triceps')?'Arms':(f.muscle==='Rear Delts'?'Shoulders':f.muscle);
+      return g===dominantMuscle;
+    }).map(e=>e.name)).size;
+    if      (distinctEx>=5) scores.balance=18;
+    else if (distinctEx>=4) scores.balance=15;
+    else if (distinctEx>=3) scores.balance=12;
+    else if (distinctEx>=2) scores.balance=9;
+    else                    scores.balance=5;
+  } else {
+    const mc=totalMuscles;
+    if      (mc>=4) scores.balance=20;
+    else if (mc===3) scores.balance=15;
+    else if (mc===2) scores.balance=9;
+    else             scores.balance=4;
+  }
 
   // 4. COMPOUND RATIO (20 pts)
   const COMP=['squat','deadlift','press','row','swing','clean','snatch','lunge','thruster','push-up','push up','goblet','rdl','hip thrust','bridge','step'];
@@ -3269,6 +3551,41 @@ function mSetRPE(n) {
   });
   const tip = document.getElementById('m-rpe-tip');
   if (tip) tip.textContent = M_RPE_TIPS[n] || '';
+}
+
+// ─── 1RM CALCULATOR ───
+function mCalc1RM() {
+  const ex   = (document.getElementById('m-orm-ex')?.value || '').trim();
+  const wt   = parseFloat(document.getElementById('m-orm-wt')?.value);
+  const reps = parseInt(document.getElementById('m-orm-reps')?.value);
+  const res  = document.getElementById('m-orm-result');
+  if (!wt || !reps || wt <= 0 || reps <= 0) { if(res) res.style.display='none'; return; }
+  const orm = calcEpley1RM(wt, reps);
+  if (!orm) { res.style.display='none'; return; }
+  res.style.display = 'block';
+  document.getElementById('m-orm-val').textContent = orm + ' kg';
+  // Strength standard if exercise known
+  const bw = state.profile?.weight || 70;
+  const std = getStrengthLevel(ex, orm, bw);
+  const stdEl = document.getElementById('m-orm-std');
+  stdEl.innerHTML = std
+    ? `<div style="font-size:0.68rem;color:var(--muted);text-transform:uppercase;letter-spacing:0.08em;">Your level</div>
+       <div style="font-family:'Oswald',sans-serif;font-weight:700;font-size:1.1rem;color:${std.color};">${std.level}</div>`
+    : '';
+  // Show percentage targets
+  const pcts = document.getElementById('m-orm-pcts');
+  pcts.innerHTML = [
+    [100,'1RM'],[95,'2–3 reps'],[90,'4–5 reps'],[85,'6–7 reps'],
+    [80,'8–9 reps'],[75,'10–11 reps'],[70,'12 reps']
+  ].map(([p,label]) => {
+    const kg = Math.round(orm * p / 100 * 2) / 2;
+    const active = reps >= (p===100?1:p===95?2:p===90?4:p===85?6:p===80?8:p===75?10:12)
+                && reps <= (p===100?1:p===95?3:p===90?5:p===85?7:p===80?9:p===75?11:15);
+    return `<div style="display:flex;justify-content:space-between;padding:2px 0;${active?'color:var(--accent);font-weight:600;':'color:var(--muted);'}">
+      <span style="font-size:0.72rem;">${p}% — ${label}</span>
+      <span style="font-size:0.72rem;font-family:'Oswald',sans-serif;">${kg} kg</span>
+    </div>`;
+  }).join('');
 }
 
 // ─── BODY METRICS (MOBILE) ───
@@ -3728,6 +4045,32 @@ function mPlayTimerDone() {
 // ─── INIT ───
 persistLoad();
 mRenderHome();
+
+// ─── FIRST RUN GUIDE ───
+if (!localStorage.getItem('hb_seen_guide')) {
+  setTimeout(() => {
+    const modal = document.getElementById('m-firstrun-modal');
+    if (modal) modal.style.display = 'flex';
+  }, 600);
+}
+
+// ─── HOME TAB TOGGLE (Log / Overview) ───
+function mHomeTab(tab) {
+  const log = document.getElementById('m-home-log-section');
+  const ovr = document.getElementById('m-home-overview-section');
+  const btnLog = document.getElementById('m-home-tab-log');
+  const btnOvr = document.getElementById('m-home-tab-overview');
+  if (tab === 'log') {
+    log.style.display = ''; ovr.style.display = 'none';
+    btnLog.style.background = 'var(--accent)'; btnLog.style.color = '#000';
+    btnOvr.style.background = 'var(--surface2)'; btnOvr.style.color = 'var(--muted)';
+  } else {
+    log.style.display = 'none'; ovr.style.display = '';
+    btnOvr.style.background = 'var(--accent)'; btnOvr.style.color = '#000';
+    btnLog.style.background = 'var(--surface2)'; btnLog.style.color = 'var(--muted)';
+    mRenderPRs(); mRenderMuscleRecovery(); mRenderWorkoutGrade(); mRenderWeeklyVolumeChart();
+  }
+}
 
 // ─── WORKOUT STOPWATCH ───
 // Counts UP — completely separate variables from the rest countdown timer
