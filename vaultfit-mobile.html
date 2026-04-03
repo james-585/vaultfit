@@ -2575,7 +2575,6 @@ function mSaveWorkout() {
   persistSave();
   document.getElementById('m-wname').value=''; document.getElementById('m-dur').value='';
   document.getElementById('m-ex-rows').innerHTML=''; mAddRow(); mAddRow();
-  mSwReset();
   // Reset RPE
   mCurrentRPE=null;
   document.querySelectorAll('.m-rpe-btn').forEach(b=>{b.classList.remove('active');b.style.background='';b.style.borderColor='';b.style.color='';});
