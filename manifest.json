@@ -1,6 +1,6 @@
 {
-  "name": "VaultFit",
-  "short_name": "VaultFit",
+  "name": "HomeBody",
+  "short_name": "HomeBody",
   "description": "Log. Build. Dominate. Your personal workout tracker.",
   "start_url": "vaultfit-mobile.html",
   "scope": ".",

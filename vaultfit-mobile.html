@@ -8,7 +8,7 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="theme-color" content="#080c10">
 <link rel="manifest" href="manifest.json">
-<title>VaultFit</title>
+<title>HomeBody</title>
 <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
 <style>
 :root{--bg:#080c10;--surface:#0f1520;--surface2:#182030;--border:#1e2d40;--accent:#00e5c8;--accent2:#ff5c35;--text:#eef2f7;--muted:#6a8099;--red:#ff4060;--green:#00d68f;--blue:#4da6ff;--nav-h:64px;--safe-bottom:env(safe-area-inset-bottom,0px)}
@@ -70,6 +70,39 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);overs
 .m-overload-hint{font-size:0.7rem;color:var(--accent);margin-top:5px;line-height:1.4;display:flex;align-items:flex-start;gap:4px;}
 .m-overload-hint.warn{color:#ffb800}.m-overload-hint.repeat{color:var(--muted)}
 .m-rpe-row{display:flex;flex-wrap:wrap;gap:5px;align-items:center;margin-top:10px;padding-top:10px;border-top:1px solid var(--border);}
+/* ── WORKOUT STOPWATCH ── */
+.sw-bar{display:flex;align-items:center;justify-content:space-between;background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:10px 14px;margin-bottom:12px;gap:10px;}
+.sw-time{font-family:'Oswald',sans-serif;font-weight:700;font-size:1.6rem;color:var(--accent);letter-spacing:0.05em;min-width:72px;}
+.sw-time.inactive{color:var(--muted);}
+.sw-label{font-size:0.65rem;color:var(--muted);text-transform:uppercase;letter-spacing:0.08em;margin-top:1px;}
+.sw-btn{font-family:'Oswald',sans-serif;font-weight:700;font-size:0.75rem;letter-spacing:0.08em;text-transform:uppercase;padding:8px 16px;border-radius:7px;border:1px solid var(--border);background:none;color:var(--text);cursor:pointer;white-space:nowrap;}
+.sw-btn.running{background:rgba(0,229,200,0.12);border-color:var(--accent);color:var(--accent);}
+.sw-btn.reset{color:var(--muted);padding:8px 10px;}
+/* ── SHOW WORKOUT OVERLAY ── */
+.show-workout-overlay{position:fixed;inset:0;z-index:9000;background:var(--bg);display:flex;flex-direction:column;overflow:hidden;}
+.show-workout-hdr{display:flex;justify-content:space-between;align-items:flex-start;padding:20px 18px 14px;border-bottom:1px solid var(--border);flex-shrink:0;}
+.show-workout-title{font-family:'Oswald',sans-serif;font-weight:700;font-size:1.4rem;letter-spacing:0.04em;text-transform:uppercase;color:var(--text);line-height:1.2;}
+.show-workout-date{font-size:0.72rem;color:var(--muted);margin-top:4px;}
+.show-workout-close{background:none;border:1px solid var(--border);color:var(--muted);width:36px;height:36px;border-radius:8px;font-size:1rem;cursor:pointer;flex-shrink:0;}
+.show-workout-body{flex:1;overflow-y:auto;padding:12px 16px 8px;}
+.show-workout-ex{padding:16px 0;border-bottom:1px solid var(--border);}
+.show-workout-ex:last-child{border-bottom:none;}
+.show-workout-ex-name{font-family:'Oswald',sans-serif;font-weight:700;font-size:1.75rem;letter-spacing:0.03em;text-transform:uppercase;color:var(--text);line-height:1.15;margin-bottom:6px;}
+.show-workout-ex-detail{font-family:'Oswald',sans-serif;font-weight:600;font-size:1.25rem;color:var(--accent);letter-spacing:0.05em;}
+.show-workout-ex-weight{font-size:0.9rem;color:var(--muted);margin-top:3px;}
+.show-workout-nav{display:flex;gap:8px;padding:12px 16px;border-top:1px solid var(--border);flex-shrink:0;}
+.show-workout-nav button{flex:1;font-family:'Oswald',sans-serif;font-weight:700;font-size:0.82rem;letter-spacing:0.1em;text-transform:uppercase;padding:13px;border-radius:8px;cursor:pointer;}
+/* ── SHOW WORKOUT OVERLAY ── */
+.show-wkt-overlay{position:fixed;inset:0;z-index:9998;background:#080c10;display:flex;flex-direction:column;overflow:hidden;}
+.show-wkt-header{display:flex;align-items:center;justify-content:space-between;padding:20px 20px 12px;border-bottom:1px solid var(--border);flex-shrink:0;}
+.show-wkt-title{font-family:'Oswald',sans-serif;font-weight:700;font-size:1.1rem;letter-spacing:0.06em;text-transform:uppercase;color:var(--text);}
+.show-wkt-close{font-size:1.4rem;background:none;border:none;color:var(--muted);cursor:pointer;padding:4px 8px;}
+.show-wkt-body{flex:1;overflow-y:auto;padding:16px 20px 40px;}
+.show-wkt-ex{padding:18px 0;border-bottom:1px solid var(--border);}
+.show-wkt-ex:last-child{border-bottom:none;}
+.show-wkt-name{font-family:'Oswald',sans-serif;font-weight:700;font-size:2rem;letter-spacing:0.03em;text-transform:uppercase;color:var(--text);line-height:1.1;margin-bottom:8px;}
+.show-wkt-detail{font-family:'Oswald',sans-serif;font-weight:600;font-size:1.3rem;color:var(--accent);letter-spacing:0.04em;}
+.show-wkt-weight{font-size:0.95rem;color:var(--muted);margin-top:4px;font-family:'Inter',sans-serif;}
 .m-rpe-label{font-size:0.68rem;color:var(--muted);font-weight:500;width:100%;margin-bottom:2px;}
 .m-rpe-btn{width:28px;height:28px;border-radius:5px;border:1px solid var(--border);background:var(--surface2);color:var(--muted);font-family:'Oswald',sans-serif;font-weight:700;font-size:0.72rem;cursor:pointer;}
 .m-rpe-btn.active{border-color:var(--accent);background:var(--accent);color:#000;}
@@ -209,6 +242,10 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);overs
 .m-preset-btn{font-family:'Oswald',sans-serif;font-weight:700;font-size:0.65rem;letter-spacing:0.07em;text-transform:uppercase;padding:6px 12px;border-radius:16px;border:1px solid var(--border);background:var(--surface2);color:var(--muted);cursor:pointer;white-space:nowrap;}
 .m-preset-btn:active{border-color:var(--accent);color:var(--accent);}
 .m-fav-btn{background:none;border:none;cursor:pointer;font-size:1.1rem;padding:3px;line-height:1;flex-shrink:0;}
+
+/* SHOW WORKOUT OVERLAY */
+
+
 ::-webkit-scrollbar{width:0;height:0}
 </style>
 </head>
@@ -228,6 +265,17 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);overs
     </div>
     <div class="quick-log-section">
       <div class="section-title">Log Today's Workout</div>
+      <!-- Workout stopwatch — counts up, fully independent of rest countdown timer -->
+      <div class="sw-bar">
+        <div>
+          <div class="sw-time inactive" id="m-sw-display">0:00</div>
+          <div class="sw-label">Workout time</div>
+        </div>
+        <div style="display:flex;gap:6px;align-items:center;">
+          <button class="sw-btn" id="m-sw-btn" onclick="mSwToggle()">▶ Start Workout</button>
+          <button class="sw-btn reset" id="m-sw-reset" onclick="mSwReset()" style="display:none;">↺</button>
+        </div>
+      </div>
       <div class="workout-meta-row">
         <input class="form-input" id="m-wname" placeholder="Workout name…" style="border-radius:8px;padding:11px 13px;font-size:0.88rem;">
         <div><div class="mini-label">Body kg</div><input class="mini-input" id="m-bw" type="number" placeholder="70" min="30" max="300"></div>
@@ -717,10 +765,10 @@ const EXERCISES = [
 
 const PLANS = [
   {
-    name: 'VaultFit Full Body Starter',
+    name: 'HomeBody Full Body Starter',
     level: 'beginner', days: 3, weeks: 8,
     desc: 'Three full-body sessions per week using only dumbbells and bodyweight. Perfect for building base strength and movement patterns.',
-    sets: '12–15 sets/session', author: 'VaultFit Team',
+    sets: '12–15 sets/session', author: 'HomeBody Team',
     planDays: [
       { name: 'Session A', note: 'Rest 60–90 sec between sets. Focus on form over weight.', exercises: [
         { name: 'DB Goblet Squat', sets: 3, reps: 12, weight: 0, trackType: 'reps' },
@@ -752,7 +800,7 @@ const PLANS = [
     name: 'Kettlebell Power & Conditioning',
     level: 'intermediate', days: 3, weeks: 8,
     desc: 'Pure kettlebell programming combining strength and conditioning. Builds explosive power, cardiovascular capacity and functional strength.',
-    sets: '16–20 sets/session', author: 'VaultFit Team',
+    sets: '16–20 sets/session', author: 'HomeBody Team',
     planDays: [
       { name: 'Power Day', note: 'Full rest 2 min between heavy sets. Move fast on conditioning blocks.', exercises: [
         { name: 'KB Swing', sets: 5, reps: 15, weight: 0, trackType: 'reps' },
@@ -781,7 +829,7 @@ const PLANS = [
     name: 'Dumbbell Hypertrophy Split',
     level: 'intermediate', days: 4, weeks: 10,
     desc: 'Upper/Lower split designed for muscle growth using dumbbells only. Progressive overload built in — add 1–2kg when you can complete all sets.',
-    sets: '18–22 sets/session', author: 'VaultFit Team',
+    sets: '18–22 sets/session', author: 'HomeBody Team',
     planDays: [
       { name: 'Upper A — Push Focus', note: 'Rest 90 sec. Last set of each exercise push to near failure.', exercises: [
         { name: 'DB Floor Press', sets: 4, reps: 10, weight: 0, trackType: 'reps' },
@@ -821,7 +869,7 @@ const PLANS = [
     name: 'Bodyweight Strength Foundation',
     level: 'beginner', days: 3, weeks: 6,
     desc: 'Zero equipment needed. Build real strength using progressive bodyweight movements, with clear progressions to harder variations.',
-    sets: '12–18 sets/session', author: 'VaultFit Team',
+    sets: '12–18 sets/session', author: 'HomeBody Team',
     planDays: [
       { name: 'Push & Core', note: 'Rest 60 sec. If push-ups are too easy, elevate your feet.', exercises: [
         { name: 'Push-Up', sets: 4, reps: 12, weight: 0, trackType: 'reps' },
@@ -853,7 +901,7 @@ const PLANS = [
     name: 'Glute & Core Sculpt',
     level: 'beginner', days: 4, weeks: 8,
     desc: 'Designed to build strong glutes, hamstrings and a stable core. Uses a mix of dumbbells, kettlebells and bodyweight. High rep ranges with short rest.',
-    sets: '16–20 sets/session', author: 'VaultFit Team',
+    sets: '16–20 sets/session', author: 'HomeBody Team',
     planDays: [
       { name: 'Glute Day 1', note: 'Rest 60 sec. 2-second squeeze at top of every bridge and thrust.', exercises: [
         { name: 'DB Hip Thrust', sets: 4, reps: 15, weight: 0, trackType: 'reps' },
@@ -893,7 +941,7 @@ const PLANS = [
     name: 'Pull-Up & Push-Up Mastery',
     level: 'intermediate', days: 3, weeks: 8,
     desc: 'Build elite upper-body strength using pull-up and push-up progressions. Structured to take you from basic to advanced calisthenics.',
-    sets: '15–20 sets/session', author: 'VaultFit Team',
+    sets: '15–20 sets/session', author: 'HomeBody Team',
     planDays: [
       { name: 'Pull Day', note: 'Full dead hang between pull-up reps. Rest 2–3 min on max effort sets.', exercises: [
         { name: 'DB Single-Arm Row', sets: 5, reps: 5, weight: 0, trackType: 'reps' },
@@ -925,7 +973,7 @@ const PLANS = [
     name: 'Advanced Dumbbell & KB Strength',
     level: 'advanced', days: 5, weeks: 12,
     desc: 'Five-day programme for experienced lifters. Combines heavy dumbbell strength work with kettlebell power and loaded carries. Periodised volume.',
-    sets: '20–25 sets/session', author: 'VaultFit Team',
+    sets: '20–25 sets/session', author: 'HomeBody Team',
     planDays: [
       { name: 'Lower Body Power', note: 'Rest 2 min. Push heaviest possible weight with perfect form.', exercises: [
         { name: 'KB Swing', sets: 5, reps: 10, weight: 0, trackType: 'reps' },
@@ -973,7 +1021,7 @@ const PLANS = [
     name: '28-Day Metabolic Torch',
     level: 'intermediate', days: 4, weeks: 4,
     desc: 'High-intensity programme combining strength and conditioning to maximise calorie burn and build lean muscle. Minimal rest, maximum output.',
-    sets: '20–24 sets/session', author: 'VaultFit Team',
+    sets: '20–24 sets/session', author: 'HomeBody Team',
     planDays: [
       { name: 'Upper Body Blast', note: 'Superset each pair. 30 sec rest between supersets. Fast pace.', exercises: [
         { name: 'Push-Up', sets: 4, reps: 15, weight: 0, trackType: 'reps' },
@@ -2502,7 +2550,9 @@ function mSetType(btn, type) {
 function mSaveWorkout() {
   const name=document.getElementById('m-wname').value.trim()||'Workout';
   const bw=parseFloat(document.getElementById('m-bw').value)||state.profile?.weight||70;
-  const dur=parseInt(document.getElementById('m-dur').value)||0;
+  // Use typed duration first; if blank and stopwatch has been running, use stopwatch elapsed time
+  const typedDur = parseInt(document.getElementById('m-dur').value)||0;
+  const dur = typedDur || mSwGetMinutes() || 0;
   const rows=document.querySelectorAll('#m-ex-rows .ex-row-m');
   const exercises=[]; let totalVol=0;
   rows.forEach(row=>{
@@ -2525,6 +2575,7 @@ function mSaveWorkout() {
   persistSave();
   document.getElementById('m-wname').value=''; document.getElementById('m-dur').value='';
   document.getElementById('m-ex-rows').innerHTML=''; mAddRow(); mAddRow();
+  mSwReset();
   // Reset RPE
   mCurrentRPE=null;
   document.querySelectorAll('.m-rpe-btn').forEach(b=>{b.classList.remove('active');b.style.background='';b.style.borderColor='';b.style.color='';});
@@ -2735,6 +2786,7 @@ function mRenderLog() {
       <div class="log-entry-hdr">
         <div><div class="log-entry-date">${date}</div><div class="log-entry-name">${escHtml(w.name)}</div></div>
         <div style="display:flex;gap:5px;align-items:center;flex-shrink:0;">
+          <button class="log-edit-btn" onclick="mShowWorkout(${w.id})" style="background:var(--surface2);border-color:var(--border);">👁 Show</button>
           <button class="log-edit-btn" onclick="mOpenEdit(${w.id})">✏️ Edit</button>
           <button class="log-edit-btn" onclick="mLoadPastWorkout(${w.id})" style="background:var(--accent);color:#000;border-color:var(--accent);">▶ Load</button>
         </div>
@@ -2749,6 +2801,9 @@ function mRenderLog() {
     </div>`;
   }).join('');
 }
+
+// ─── SHOW WORKOUT OVERLAY ───
+// mShowWorkout — see implementation below
 
 // ─── PLANS ───
 function mRenderPlans() {
@@ -3450,7 +3505,7 @@ function mExportData() {
     _vaultfit: true,
     _version: 1,
     _exported: new Date().toISOString(),
-    _name: state.profile?.name || 'VaultFit User',
+    _name: state.profile?.name || 'HomeBody User',
     workouts:        state.workouts,
     personalRecords: state.personalRecords,
     bodyMetrics:     state.bodyMetrics,
@@ -3463,9 +3518,9 @@ function mExportData() {
   const url  = URL.createObjectURL(blob);
   const a    = document.createElement('a');
   const date = new Date().toISOString().slice(0, 10);
-  const name = (state.profile?.name || 'VaultFit').replace(/[^a-z0-9]/gi, '_');
+  const name = (state.profile?.name || 'HomeBody').replace(/[^a-z0-9]/gi, '_');
   a.href     = url;
-  a.download = `${name}_VaultFit_${date}.vaultfit`;
+  a.download = `${name}_HomeBody_${date}.vaultfit`;
   document.body.appendChild(a);
   a.click();
   document.body.removeChild(a);
@@ -3483,7 +3538,7 @@ function mImportData(event) {
   reader.onload = (e) => {
     try {
       const data = JSON.parse(e.target.result);
-      if (!data._vaultfit) { mToast('Invalid file — not a VaultFit backup', 'error'); return; }
+      if (!data._vaultfit) { mToast('Invalid file — not a HomeBody backup', 'error'); return; }
       mPendingImport = data;
       mShowImportConfirm(data);
     } catch { mToast('Could not read file — make sure it is a .vaultfit backup', 'error'); }
@@ -3675,12 +3730,115 @@ function mPlayTimerDone() {
 persistLoad();
 mRenderHome();
 
+// ─── WORKOUT STOPWATCH ───
+// Counts UP — completely separate variables from the rest countdown timer
+// (mTs, mTt, mTr, mTi are rest timer only — untouched here)
+let mSwElapsed = 0;      // seconds elapsed
+let mSwRunning = false;
+let mSwInterval = null;
+
+function mSwTick() {
+  mSwElapsed++;
+  const h = Math.floor(mSwElapsed / 3600);
+  const m = Math.floor((mSwElapsed % 3600) / 60);
+  const s = mSwElapsed % 60;
+  const display = h > 0
+    ? `${h}:${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`
+    : `${m}:${String(s).padStart(2,'0')}`;
+  const el = document.getElementById('m-sw-display');
+  if (el) { el.textContent = display; el.classList.remove('inactive'); }
+}
+
+function mSwToggle() {
+  const btn = document.getElementById('m-sw-btn');
+  const reset = document.getElementById('m-sw-reset');
+  if (mSwRunning) {
+    // Pause
+    clearInterval(mSwInterval);
+    mSwInterval = null;
+    mSwRunning = false;
+    if (btn) { btn.textContent = '▶ Resume'; btn.classList.remove('running'); }
+  } else {
+    // Start / Resume
+    mSwRunning = true;
+    mSwInterval = setInterval(mSwTick, 1000);
+    if (btn) { btn.textContent = '⏸ Pause'; btn.classList.add('running'); }
+    if (reset) reset.style.display = 'inline-block';
+  }
+}
+
+function mSwReset() {
+  clearInterval(mSwInterval);
+  mSwInterval = null;
+  mSwRunning = false;
+  mSwElapsed = 0;
+  const btn = document.getElementById('m-sw-btn');
+  const reset = document.getElementById('m-sw-reset');
+  const el = document.getElementById('m-sw-display');
+  if (el) { el.textContent = '0:00'; el.classList.add('inactive'); }
+  if (btn) { btn.textContent = '▶ Start Workout'; btn.classList.remove('running'); }
+  if (reset) reset.style.display = 'none';
+}
+
+// Auto-fill duration field from stopwatch when saving, if mins field is empty
+function mSwGetMinutes() {
+  return mSwElapsed > 0 ? Math.max(1, Math.round(mSwElapsed / 60)) : 0;
+}
+
+// ─── SHOW WORKOUT ───
+function mShowWorkout(id) {
+  const w = state.workouts.find(x => x.id === id);
+  if (!w) return;
+
+  // Remove any existing overlay
+  const existing = document.getElementById('show-wkt-overlay');
+  if (existing) existing.remove();
+
+  const date = new Date(w.date).toLocaleDateString('en-AU', {
+    weekday:'long', day:'numeric', month:'short', year:'numeric'
+  });
+
+  const exHTML = w.exercises.map(e => {
+    const repsStr = e.trackType === 'time'
+      ? `${e.sets} sets × ${e.time}s`
+      : `${e.sets} sets × ${e.reps} reps`;
+    const wtStr = e.weight > 0 ? `${e.weight} kg` : '';
+    return `<div class="show-wkt-ex">
+      <div class="show-wkt-name">${escHtml(e.name)}</div>
+      <div class="show-wkt-detail">${repsStr}</div>
+      ${wtStr ? `<div class="show-wkt-weight">${wtStr}</div>` : ''}
+    </div>`;
+  }).join('');
+
+  const overlay = document.createElement('div');
+  overlay.id = 'show-wkt-overlay';
+  overlay.className = 'show-wkt-overlay';
+  overlay.innerHTML = `
+    <div class="show-wkt-header">
+      <div>
+        <div class="show-wkt-title">${escHtml(w.name)}</div>
+        <div style="font-size:0.7rem;color:var(--muted);margin-top:3px;">${date}</div>
+      </div>
+      <button class="show-wkt-close" onclick="document.getElementById('show-wkt-overlay').remove()">✕</button>
+    </div>
+    <div class="show-wkt-body">${exHTML}</div>`;
+
+  document.body.appendChild(overlay);
+
+  // Swipe down to close
+  let startY = 0;
+  overlay.addEventListener('touchstart', e => { startY = e.touches[0].clientY; }, {passive:true});
+  overlay.addEventListener('touchend', e => {
+    if (e.changedTouches[0].clientY - startY > 80) overlay.remove();
+  }, {passive:true});
+}
+
 // Register service worker for offline support and PWA install prompt
 if ('serviceWorker' in navigator) {
   window.addEventListener('load', () => {
     navigator.serviceWorker.register('sw.js').catch(() => {});
   });
 }
-if(!state.profile?.name) setTimeout(()=>mToast('👤 Set up your profile for BMI tracking!',''),800);
+if(!state.profile?.name) setTimeout(()=>mToast('👋 Welcome to HomeBody! Tap Profile to set up your account.',''),1200);
 
 </script></body></html>

@@ -1,7 +1,7 @@
 // VaultFit Service Worker
 // Caches the app for offline use and ensures updates propagate correctly
 
-const CACHE_NAME = 'vaultfit-v1';
+const CACHE_NAME = 'homebody-v1';
 const FILES_TO_CACHE = [
   '/vaultfit-mobile.html',
   '/manifest.json'
