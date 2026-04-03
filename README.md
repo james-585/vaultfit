@@ -1,2 +1,0 @@
-# vaultfit
-Workout app
