@@ -68,6 +68,10 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);overs
 .btn-rm{background:none;border:1px solid var(--border);color:var(--muted);width:34px;height:34px;border-radius:8px;cursor:pointer;font-size:0.9rem;display:flex;align-items:center;justify-content:center}
 .btn-rm:active{border-color:var(--red);color:var(--red)}
 .m-overload-hint{font-size:0.7rem;color:var(--accent);margin-top:5px;line-height:1.4;display:flex;align-items:flex-start;gap:4px;}
+.bilateral-toggle{display:none;margin-top:6px;align-items:center;gap:7px;font-size:0.68rem;color:var(--muted);}
+.bilateral-toggle.visible{display:flex;}
+.bilateral-btn{font-family:'Oswald',sans-serif;font-weight:700;font-size:0.62rem;letter-spacing:0.07em;text-transform:uppercase;padding:5px 10px;border-radius:5px;border:1px solid var(--border);background:var(--surface2);color:var(--muted);cursor:pointer;transition:all 0.12s;}
+.bilateral-btn.active{background:rgba(0,229,200,0.15);border-color:var(--accent);color:var(--accent);}
 .m-overload-hint.warn{color:#ffb800}.m-overload-hint.repeat{color:var(--muted)}
 .m-rpe-row{display:flex;flex-wrap:wrap;gap:5px;align-items:center;margin-top:10px;padding-top:10px;border-top:1px solid var(--border);}
 /* ── WORKOUT STOPWATCH ── */
@@ -2664,9 +2668,63 @@ function mRenderMuscleRecovery() {
 }
 
 // ─── QUICK LOG ───
+
+// ─── UNILATERAL EXERCISE DETECTION ───
+const UNILATERAL_EXERCISES = new Set([
+  'DB Single-Arm Row','DB Meadows Row','DB Concentration Curl','DB Kickback',
+  'DB Reverse Lunge','DB Walking Lunge','DB Split Squat','DB Bulgarian Split Squat',
+  'DB Single-Leg Deadlift','DB Suitcase Carry','DB Curtsy Lunge','DB Russian Deadlift',
+  'KB Press','KB Single-Leg Deadlift','KB Lunge','KB Suitcase Carry',
+  'KB Curtsy Lunge','KB Russian Deadlift',
+  'Archer Push-Up','Pistol Squat','Bulgarian Split Squat',
+  'Reverse Lunge','Walking Lunge','Lateral Lunge','Curtsy Lunge',
+  'Single-Leg Glute Bridge','Single-Leg Calf Raise',
+  'Shoulder Knee Tap','Spiderman Plank',
+  'Reverse Lunge to Knee Drive','Curtsy Lunge to Knee Drive','Lateral Lunge to Curtsy',
+  'Seated Single-Arm Press','Single-Leg Glute Bridge J-Press',
+  'Glute Bridge March','KB Russian Deadlift',
+]);
+
+function mIsUnilateral(name) {
+  if (UNILATERAL_EXERCISES.has(name)) return true;
+  // Also catch by keyword for any exercises not in the list
+  const l = name.toLowerCase();
+  return l.includes('single-arm') || l.includes('single arm') ||
+         l.includes('single-leg') || l.includes('single leg') ||
+         l.includes('one-arm') || l.includes('one arm') ||
+         l.includes('lunge') || l.includes('split squat') ||
+         l.includes('pistol') || l.includes('curtsy') ||
+         l.includes('suitcase') || l.includes('meadows') ||
+         l.includes('concentration curl') || l.includes('kickback');
+}
+
+function mUpdateBilateralToggle(row) {
+  const name = row.querySelector('.ex-name-m').value.trim();
+  const toggle = row.querySelector('.bilateral-toggle');
+  if (!toggle) return;
+  if (name && mIsUnilateral(name)) {
+    toggle.classList.add('visible');
+  } else {
+    toggle.classList.remove('visible');
+    // Reset bilateral state when exercise changes to non-unilateral
+    row.dataset.bilateral = 'false';
+    const btn = toggle.querySelector('.bilateral-btn');
+    if (btn) { btn.classList.remove('active'); btn.textContent = '↔ Both sides'; }
+  }
+}
+
+function mToggleBilateral(btn) {
+  const row = btn.closest('.ex-row-m');
+  const isNowActive = !btn.classList.contains('active');
+  btn.classList.toggle('active', isNowActive);
+  row.dataset.bilateral = isNowActive ? 'true' : 'false';
+  btn.textContent = isNowActive ? '✓ Both sides logged' : '↔ Both sides';
+}
+
 function mAddRow(name) {
   const rows=document.getElementById('m-ex-rows');
   const div=document.createElement('div'); div.className='ex-row-m';
+  div.dataset.bilateral = 'false';
   div.innerHTML=`
     <input list="m-ex-suggestions" class="ex-name-m" placeholder="Exercise name…" value="${name?escHtml(name):''}" autocomplete="off">
     <div class="ex-row-grid">
@@ -2675,14 +2733,20 @@ function mAddRow(name) {
       <div><div class="mini-label">Reps</div><input class="mini-input" type="number" placeholder="10" min="0"></div>
       <button class="btn-rm" onclick="this.closest('.ex-row-m').remove()">×</button>
     </div>
-    <div style="margin-top:6px;"><div class="mini-label">Weight (kg)</div><input class="mini-input" type="number" placeholder="—" min="0" step="0.5" style="width:90px;"></div>`;
+    <div style="margin-top:6px;display:flex;align-items:center;gap:10px;flex-wrap:wrap;">
+      <div><div class="mini-label">Weight (kg)</div><input class="mini-input" type="number" placeholder="—" min="0" step="0.5" style="width:90px;"></div>
+      <div class="bilateral-toggle">
+        <button class="bilateral-btn" onclick="mToggleBilateral(this)">↔ Both sides</button>
+        <span style="font-size:0.64rem;color:var(--muted);">Log each side</span>
+      </div>
+    </div>`;
   rows.appendChild(div);
-  // Wire overload hint
+  // Wire overload hint + bilateral toggle
   const nameInput = div.querySelector('.ex-name-m');
-  nameInput.addEventListener('change', () => mUpdateOverloadHint(nameInput));
-  nameInput.addEventListener('blur',   () => mUpdateOverloadHint(nameInput));
+  nameInput.addEventListener('change', () => { mUpdateOverloadHint(nameInput); mUpdateBilateralToggle(div); });
+  nameInput.addEventListener('blur',   () => { mUpdateOverloadHint(nameInput); mUpdateBilateralToggle(div); });
   // Trigger immediately if name was pre-filled
-  if (name) setTimeout(() => mUpdateOverloadHint(nameInput), 50);
+  if (name) setTimeout(() => { mUpdateOverloadHint(nameInput); mUpdateBilateralToggle(div); }, 50);
 }
 
 function mSetType(btn, type) {
@@ -2709,8 +2773,15 @@ function mSaveWorkout() {
     const weight=parseFloat(inputs[2]?.value)||0;
     const tt=row.dataset.trackType||'reps';
     if(exName&&sets>0){
-      exercises.push({name:exName,sets,reps:tt==='reps'?val:0,time:tt==='time'?val:0,weight,trackType:tt});
-      if(tt==='reps') totalVol+=sets*val*weight;
+      const bilateral = row.dataset.bilateral === 'true';
+      const sides = bilateral ? 2 : 1;
+      const sideLabels = bilateral ? [' (Left)', ' (Right)'] : [''];
+      for (let si = 0; si < sides; si++) {
+        const sideName = exName + (bilateral ? sideLabels[si] : '');
+        exercises.push({name:sideName,sets,reps:tt==='reps'?val:0,time:tt==='time'?val:0,weight,trackType:tt,bilateral:bilateral,side:bilateral?(si===0?'left':'right'):null});
+        if(tt==='reps') totalVol+=sets*val*weight;
+      }
+      // PR tracking on base name (not side-specific)
       if(tt==='reps'&&weight>0){if(!state.personalRecords[exName]||weight>state.personalRecords[exName].value){state.personalRecords[exName]={value:weight,unit:'kg'};mToast(`🏆 New PR! ${exName}: ${weight}kg`,'success');}}
       else if(tt==='time'&&val>0){if(!state.personalRecords[exName]||val>state.personalRecords[exName].value){state.personalRecords[exName]={value:val,unit:'sec'};mToast(`🏆 New PR! ${exName}: ${val}s`,'success');}}
     }
@@ -3487,8 +3558,13 @@ function mRenderWorkoutGrade() {
 
 // ─── PROGRESSIVE OVERLOAD SUGGESTIONS (MOBILE) ───
 function mGetLastPerformance(exName) {
+  // Strip bilateral side suffix if present, look up by base name
+  const baseName = exName.replace(/ \(Left\)$/, '').replace(/ \(Right\)$/, '');
   for (const w of state.workouts) {
-    const ex = w.exercises.find(e => e.name.toLowerCase() === exName.toLowerCase());
+    const ex = w.exercises.find(e => {
+      const eName = e.name.replace(/ \(Left\)$/, '').replace(/ \(Right\)$/, '');
+      return eName.toLowerCase() === baseName.toLowerCase();
+    });
     if (ex) return { sets:ex.sets, reps:ex.reps, weight:ex.weight, time:ex.time, trackType:ex.trackType };
   }
   return null;
@@ -4218,14 +4294,30 @@ function mShowWorkout(id) {
     weekday:'long', day:'numeric', month:'short', year:'numeric'
   });
 
-  const exHTML = w.exercises.map(e => {
+  // Group bilateral pairs (Left + Right) into single display entries
+  const displayEx = [];
+  for (let i = 0; i < w.exercises.length; i++) {
+    const e = w.exercises[i];
+    if (e.bilateral && e.side === 'left' && i+1 < w.exercises.length &&
+        w.exercises[i+1].bilateral && w.exercises[i+1].side === 'right') {
+      displayEx.push({...e, name: e.name.replace(/ \(Left\)$/, ''), _bothSides: true});
+      i++;
+    } else {
+      displayEx.push(e);
+    }
+  }
+
+  const exHTML = displayEx.map(e => {
     const repsStr = e.trackType === 'time'
       ? `${e.sets} sets × ${e.time}s`
       : `${e.sets} sets × ${e.reps} reps`;
     const wtStr = e.weight > 0 ? `${e.weight} kg` : '';
+    const badge = e._bothSides
+      ? `<span style="font-size:0.55rem;background:rgba(0,229,200,0.12);color:var(--accent);border:1px solid rgba(0,229,200,0.25);border-radius:4px;padding:2px 6px;margin-left:6px;font-family:'Oswald',sans-serif;font-weight:700;letter-spacing:0.07em;vertical-align:middle;">BOTH SIDES</span>`
+      : '';
     return `<div class="show-wkt-ex">
-      <div class="show-wkt-name">${escHtml(e.name)}</div>
-      <div class="show-wkt-detail">${repsStr}</div>
+      <div class="show-wkt-name">${escHtml(e.name)}${badge}</div>
+      <div class="show-wkt-detail">${repsStr} each side</div>
       ${wtStr ? `<div class="show-wkt-weight">${wtStr}</div>` : ''}
     </div>`;
   }).join('');
