@@ -4026,7 +4026,7 @@ function mLoadGenerated(){
 }
 
 // ─── REST TIMER ───
-let mTs=90,mTt=90,mTr=false,mTi=null;
+let mTs=30,mTt=30,mTr=false,mTi=null;
 function mSetTimer(s){clearInterval(mTi);mTr=false;mTs=s;mTt=s;document.getElementById('m-timer-btn').textContent='Start';document.getElementById('m-timer-disp').classList.remove('warn');mTick();document.querySelectorAll('.timer-preset').forEach(b=>b.classList.remove('active'));event.target.classList.add('active');}
 function mToggleTimer(){if(mTr){clearInterval(mTi);mTr=false;document.getElementById('m-timer-btn').textContent='Resume';}else{mTr=true;document.getElementById('m-timer-btn').textContent='Pause';mTi=setInterval(()=>{mTs--;if(mTs<=10)document.getElementById('m-timer-disp').classList.add('warn');if(mTs<=0){clearInterval(mTi);mTr=false;document.getElementById('m-timer-btn').textContent='Start';mTs=0;mPlayTimerDone();mToast('⏱ Rest done! Back to work!','success');}mTick();},1000);}}
 function mResetTimer(){clearInterval(mTi);mTr=false;mTs=mTt;document.getElementById('m-timer-btn').textContent='Start';document.getElementById('m-timer-disp').classList.remove('warn');mTick();}
@@ -4423,9 +4423,10 @@ function mHandleShake(event) {
   }
   mShakeDoubleTap = now;
 
-  // Single shake: start or reset timer
+  // Single shake: set timer to current shake preset, then start/restart
+  mTt = SHAKE_PRESETS[mShakePresetIdx];
   if (mTr) {
-    // Timer is running — reset it
+    // Timer is running — reset and restart
     clearInterval(mTi);
     mTr = false;
     mTs = mTt;
@@ -4456,6 +4457,7 @@ function mHandleShake(event) {
   }
   mPlayBeep(880, 0.08, 0.3);
   if (navigator.vibrate) navigator.vibrate(80);
+  mToast(`⏱ ${mTt}s rest — go!`, 'success');
 }
 
 // Init shake listener — request permission on iOS 13+
