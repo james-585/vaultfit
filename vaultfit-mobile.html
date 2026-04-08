@@ -306,66 +306,14 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);overs
 
       <!-- OVERVIEW SECTION -->
       <div id="m-home-overview-section" style="display:none;">
+      <!-- This Week -->
       <div class="card" style="margin-bottom:12px;">
         <div class="card-title">This Week</div>
         <div class="week-row" id="m-week-bars"></div>
         <div style="display:flex;gap:6px;margin-top:4px;" id="m-week-labels"></div>
       </div>
-      <div class="card">
-        <div class="card-title">Personal Records 🏆</div>
-        <div id="m-prs"><div class="empty-state" style="padding:16px 0;"><p>Log workouts to set PRs</p></div></div>
-      </div>
-      <!-- 1RM Calculator -->
-      <div class="card" style="margin-top:12px;">
-        <div class="card-title">🏋️ 1RM Calculator</div>
-        <div style="display:flex;gap:7px;margin-bottom:10px;align-items:flex-end;">
-          <div class="form-group" style="margin:0;flex:2;">
-            <label class="form-label">Exercise</label>
-            <input class="form-input" id="m-orm-ex" list="m-ex-suggestions" placeholder="e.g. DB Bent-Over Row" style="font-size:0.82rem;padding:9px 10px;" oninput="mCalc1RM()">
-          </div>
-          <div class="form-group" style="margin:0;flex:1;">
-            <label class="form-label">Weight kg</label>
-            <input class="form-input" id="m-orm-wt" type="number" min="1" step="0.5" placeholder="50" style="font-size:0.82rem;padding:9px 10px;" oninput="mCalc1RM()">
-          </div>
-          <div class="form-group" style="margin:0;width:60px;">
-            <label class="form-label">Reps</label>
-            <input class="form-input" id="m-orm-reps" type="number" min="1" max="30" placeholder="8" style="font-size:0.82rem;padding:9px 10px;" oninput="mCalc1RM()">
-          </div>
-        </div>
-        <div id="m-orm-result" style="display:none;background:var(--surface2);border-radius:8px;padding:12px 14px;">
-          <div style="display:flex;justify-content:space-between;align-items:center;">
-            <div>
-              <div style="font-size:0.68rem;color:var(--muted);text-transform:uppercase;letter-spacing:0.08em;">Estimated 1RM</div>
-              <div style="font-family:'Oswald',sans-serif;font-weight:700;font-size:1.8rem;color:var(--accent);" id="m-orm-val">—</div>
-            </div>
-            <div id="m-orm-std" style="text-align:right;"></div>
-          </div>
-          <div style="margin-top:8px;padding-top:8px;border-top:1px solid var(--border);" id="m-orm-pcts"></div>
-        </div>
-      </div>
-      <div class="card" style="margin-top:12px;">
-        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;">
-          <div class="card-title" style="margin-bottom:0;">Muscle Recovery</div>
-          <div style="font-size:0.62rem;color:var(--muted);">Last 7 days</div>
-        </div>
-        <div id="m-muscle-recovery"></div>
-        <!-- Legend (collapsed by default) -->
-        <div style="margin-top:10px;padding-top:10px;border-top:1px solid var(--border);">
-          <button onclick="this.nextElementSibling.style.display=this.nextElementSibling.style.display==='none'?'block':'none';this.textContent=this.textContent.includes('▶')?'▼ Hide guide':'▶ How to read this';" style="background:none;border:none;color:var(--muted);font-size:0.68rem;cursor:pointer;padding:0;font-family:'Inter',sans-serif;">▶ How to read this</button>
-          <div style="display:none;margin-top:8px;">
-            <div style="display:flex;flex-direction:column;gap:5px;">
-              <div style="display:flex;align-items:center;gap:8px;font-size:0.74rem;"><div style="width:10px;height:10px;border-radius:50%;background:var(--green);flex-shrink:0;"></div><span style="color:var(--green);font-family:'Oswald',sans-serif;font-weight:700;font-size:0.7rem;letter-spacing:0.06em;text-transform:uppercase;width:58px;flex-shrink:0;">Fresh</span><span style="color:var(--muted);">Not trained this week</span></div>
-              <div style="display:flex;align-items:center;gap:8px;font-size:0.74rem;"><div style="width:10px;height:10px;border-radius:50%;background:var(--green);flex-shrink:0;"></div><span style="color:var(--green);font-family:'Oswald',sans-serif;font-weight:700;font-size:0.7rem;letter-spacing:0.06em;text-transform:uppercase;width:58px;flex-shrink:0;">Ready</span><span style="color:var(--muted);">72h+ since last session</span></div>
-              <div style="display:flex;align-items:center;gap:8px;font-size:0.74rem;"><div style="width:10px;height:10px;border-radius:50%;background:var(--accent2);flex-shrink:0;"></div><span style="color:var(--accent2);font-family:'Oswald',sans-serif;font-weight:700;font-size:0.7rem;letter-spacing:0.06em;text-transform:uppercase;width:58px;flex-shrink:0;">Recover</span><span style="color:var(--muted);">48–72h — avoid heavy load</span></div>
-              <div style="display:flex;align-items:center;gap:8px;font-size:0.74rem;"><div style="width:10px;height:10px;border-radius:50%;background:#ffb800;flex-shrink:0;"></div><span style="color:#ffb800;font-family:'Oswald',sans-serif;font-weight:700;font-size:0.7rem;letter-spacing:0.06em;text-transform:uppercase;width:58px;flex-shrink:0;">Worked</span><span style="color:var(--muted);">24–48h — rest recommended</span></div>
-              <div style="display:flex;align-items:center;gap:8px;font-size:0.74rem;"><div style="width:10px;height:10px;border-radius:50%;background:var(--red);flex-shrink:0;"></div><span style="color:var(--red);font-family:'Oswald',sans-serif;font-weight:700;font-size:0.7rem;letter-spacing:0.06em;text-transform:uppercase;width:58px;flex-shrink:0;">Taxed</span><span style="color:var(--muted);">Trained in last 24h</span></div>
-            </div>
-            <div style="font-size:0.67rem;color:var(--muted);margin-top:8px;line-height:1.5;">Bar = weekly sets vs PT target. Teal = on track, amber = building, red = needs work.</div>
-          </div>
-        </div>
-      </div>
       <!-- Today's Workout Grade -->
-      <div class="card" style="margin-top:12px;">
+      <div class="card" style="margin-bottom:12px;">
         <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;">
           <div class="card-title" style="margin-bottom:0;">Today's Workout Grade</div>
           <div id="m-grade-date" style="font-size:0.62rem;color:var(--muted);"></div>
@@ -374,13 +322,26 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);overs
           <div style="color:var(--muted);font-size:0.8rem;">Log a workout to receive your PT grade.</div>
         </div>
       </div>
+      <!-- Muscle Recovery -->
+      <div class="card" style="margin-bottom:12px;">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;">
+          <div class="card-title" style="margin-bottom:0;">Muscle Recovery</div>
+          <div style="font-size:0.62rem;color:var(--muted);">Last 7 days</div>
+        </div>
+        <div id="m-muscle-recovery"></div>
+      </div>
       <!-- Weekly Volume by Muscle -->
-      <div class="card" style="margin-top:12px;">
+      <div class="card" style="margin-bottom:12px;">
         <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
           <div class="card-title" style="margin-bottom:0;">Weekly Volume by Muscle</div>
           <div style="font-size:0.62rem;color:var(--muted);">Sets vs target</div>
         </div>
         <div id="m-weekly-volume-chart"></div>
+      </div>
+      <!-- Personal Records -->
+      <div class="card">
+        <div class="card-title">Personal Records 🏆</div>
+        <div id="m-prs"><div class="empty-state" style="padding:16px 0;"><p>Log workouts to set PRs</p></div></div>
       </div>
       </div><!-- end overview section -->
     </div>
@@ -405,10 +366,12 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);overs
     <div class="plan-tabs">
       <button class="plan-tab active" onclick="mSwitchPlanTab('expert',this)">Expert Plans</button>
       <button class="plan-tab" onclick="mSwitchPlanTab('mine',this)">My Plans <span id="m-plan-badge" style="display:none;background:var(--accent);color:#000;font-size:0.55rem;padding:1px 5px;border-radius:8px;margin-left:3px;font-family:'Oswald',sans-serif;font-weight:700;"></span></button>
+      <button class="plan-tab" onclick="mSwitchPlanTab('calendar',this)">Calendar</button>
     </div>
     <div style="padding:8px 14px 0;font-size:0.75rem;color:var(--muted);line-height:1.5;" id="m-plan-tab-desc">Follow a structured programme — loads exercises directly into your log.</div>
     <div id="m-plan-tab-expert" class="plan-tab-content active"><div class="plan-cards" id="m-expert-plans"></div></div>
     <div id="m-plan-tab-mine" class="plan-tab-content"><div class="plan-cards" id="m-my-plans"></div></div>
+    <div id="m-plan-tab-calendar" class="plan-tab-content"><div style="padding:12px 14px;" id="m-plan-calendar"></div></div>
   </div>
   <!-- PROFILE -->
   <div id="page-profile" class="page">
@@ -486,6 +449,7 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);overs
 </nav>
 <button class="timer-fab" onclick="mOpenModal('m-timer-modal')" style="right:88px;width:auto;border-radius:24px;padding:0 12px;gap:5px;flex-direction:row;font-family:'Oswald',sans-serif;font-weight:700;font-size:0.62rem;letter-spacing:0.06em;" title="Rest Timer"><span>⏱</span><span>REST</span></button>
 <button id="m-wake-btn" class="timer-fab" onclick="mToggleWakeLock()" title="Keep screen on" style="right:18px;width:auto;border-radius:24px;padding:0 12px;gap:5px;flex-direction:row;font-family:'Oswald',sans-serif;font-weight:700;font-size:0.62rem;letter-spacing:0.06em;"><span>☀️</span><span>WAKE</span></button>
+<button id="m-shake-btn" class="timer-fab" onclick="mToggleShake()" title="Shake to start rest timer" style="right:158px;width:auto;border-radius:24px;padding:0 12px;gap:5px;flex-direction:row;font-family:'Oswald',sans-serif;font-weight:700;font-size:0.62rem;letter-spacing:0.06em;"><span>📳</span><span class="shake-label">SHAKE</span></button>
 
 <!-- FIRST RUN GUIDE -->
 <div class="modal-overlay" id="m-firstrun-modal" style="display:none;">
@@ -2651,20 +2615,22 @@ function mRenderMuscleRecovery() {
     return;
   }
 
-  el.innerHTML = MUSCLES.map(m => {
-    const done = sets[m] || 0;
-    const target = PT_TARGETS[m] || 12;
-    const pct = Math.min(100, Math.round((done / target) * 100));
-    const barColor = getVolumeColor(m);
+  el.innerHTML = `<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:6px;">` +
+    MUSCLES.map(m => {
     const status = getStatus(m);
-    return `<div class="m-muscle-row">
-      <div class="m-muscle-name">${m}</div>
-      <div class="m-muscle-track" title="${done}/${target} sets this week">
-        <div class="m-muscle-fill" style="width:${pct}%;background:${barColor};"></div>
-      </div>
-      <div class="m-muscle-status" style="color:${status.color};">${status.label}</div>
+    const hoursAgo = lastHit[m] ? Math.round((now - lastHit[m]) / 3600000) : null;
+    const timeLabel = hoursAgo === null ? '' : hoursAgo < 24 ? `${hoursAgo}h ago` : hoursAgo < 48 ? '1d ago' : hoursAgo < 72 ? '2d ago' : `${Math.floor(hoursAgo/24)}d ago`;
+    const ICONS = {Chest:'🫁',Back:'🔙',Shoulders:'🏔',Arms:'💪',Core:'🎯',Quads:'🦵',Glutes:'🍑',Hamstrings:'🦿',Calves:'🐄'};
+    const icon = ICONS[m] || '●';
+    const bgAlpha = status.label==='Taxed' ? '0.12' : status.label==='Worked' ? '0.08' : '0.05';
+    const bgColor = status.color;
+    return `<div style="background:rgba(${bgColor==='var(--red)'?'255,64,96':bgColor==='#ffb800'?'255,184,0':bgColor==='var(--accent2)'?'255,92,53':'0,214,143'},${bgAlpha});border:1px solid rgba(${bgColor==='var(--red)'?'255,64,96':bgColor==='#ffb800'?'255,184,0':bgColor==='var(--accent2)'?'255,92,53':'0,214,143'},0.2);border-radius:10px;padding:10px 8px;text-align:center;">
+      <div style="font-size:1.2rem;line-height:1;margin-bottom:4px;">${icon}</div>
+      <div style="font-family:'Oswald',sans-serif;font-weight:700;font-size:0.7rem;letter-spacing:0.05em;text-transform:uppercase;color:var(--text);margin-bottom:2px;">${m}</div>
+      <div style="font-family:'Oswald',sans-serif;font-weight:700;font-size:0.62rem;letter-spacing:0.08em;text-transform:uppercase;color:${status.color};">${status.label}</div>
+      ${timeLabel ? `<div style="font-size:0.58rem;color:var(--muted);margin-top:1px;">${timeLabel}</div>` : ''}
     </div>`;
-  }).join('');
+  }).join('') + `</div>`;
 }
 
 // ─── QUICK LOG ───
@@ -3148,8 +3114,175 @@ function mSwitchPlanTab(tab,btn) {
   const desc = document.getElementById('m-plan-tab-desc');
   if (desc) desc.textContent = tab==='expert'
     ? 'Follow a structured programme — loads exercises directly into your log.'
-    : 'Your custom plans — save workout templates you can reuse anytime.';
+    : tab==='mine'
+    ? 'Your custom plans — save workout templates you can reuse anytime.'
+    : 'Your training schedule — tap a day to load it.';
   if(tab==='mine') mRenderMyPlans();
+  if(tab==='calendar') mRenderPlanCalendar();
+}
+
+// ─── PLAN CALENDAR ───
+let mCalMonth = new Date().getMonth();
+let mCalYear = new Date().getFullYear();
+
+function mRenderPlanCalendar() {
+  const el = document.getElementById('m-plan-calendar');
+  if (!el) return;
+
+  // Gather all plans (user plans with named days like "Tuesday — ...")
+  const allPlans = [...state.userPlans];
+  const DAY_NAMES = ['sunday','monday','tuesday','wednesday','thursday','friday','saturday'];
+  const DAY_SHORT = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+
+  // Build schedule: map day-of-week index to plan days
+  const schedule = {}; // { 0: [{planName, day}], 1: [...], ... }
+  allPlans.forEach(plan => {
+    const dl = plan.planDays || (Array.isArray(plan.days) ? plan.days : []);
+    dl.forEach((day, dayIdx) => {
+      // Try to extract day name from day.name (e.g. "Tuesday — Full Body")
+      const nameLower = (day.name || '').toLowerCase();
+      let matched = -1;
+      DAY_NAMES.forEach((dn, i) => { if (nameLower.startsWith(dn)) matched = i; });
+      if (matched >= 0) {
+        if (!schedule[matched]) schedule[matched] = [];
+        schedule[matched].push({ planName: plan.name, planId: plan.id, day, dayIdx, planObj: plan });
+      }
+    });
+  });
+
+  // Build workout log lookup: date string -> workout[]
+  const workoutsByDate = {};
+  state.workouts.forEach(w => {
+    const d = new Date(w.date); d.setHours(0,0,0,0);
+    const key = d.toISOString().split('T')[0];
+    if (!workoutsByDate[key]) workoutsByDate[key] = [];
+    workoutsByDate[key].push(w);
+  });
+
+  // Calendar grid for current month
+  const today = new Date(); today.setHours(0,0,0,0);
+  const firstDay = new Date(mCalYear, mCalMonth, 1);
+  const lastDay = new Date(mCalYear, mCalMonth + 1, 0);
+  const startDow = firstDay.getDay(); // 0=Sun
+  const daysInMonth = lastDay.getDate();
+  const monthLabel = firstDay.toLocaleDateString('en-AU', { month: 'long', year: 'numeric' });
+
+  // Header with nav
+  let html = `<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;">
+    <button onclick="mCalPrev()" style="background:none;border:1px solid var(--border);color:var(--muted);width:34px;height:34px;border-radius:8px;cursor:pointer;font-size:1rem;">‹</button>
+    <div style="font-family:'Oswald',sans-serif;font-weight:700;font-size:1.05rem;letter-spacing:0.06em;text-transform:uppercase;">${monthLabel}</div>
+    <button onclick="mCalNext()" style="background:none;border:1px solid var(--border);color:var(--muted);width:34px;height:34px;border-radius:8px;cursor:pointer;font-size:1rem;">›</button>
+  </div>`;
+
+  // Day headers
+  html += `<div style="display:grid;grid-template-columns:repeat(7,1fr);gap:2px;margin-bottom:4px;">`;
+  DAY_SHORT.forEach(d => {
+    html += `<div style="text-align:center;font-family:'Oswald',sans-serif;font-weight:700;font-size:0.6rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--muted);padding:6px 0;">${d}</div>`;
+  });
+  html += `</div>`;
+
+  // Calendar cells
+  html += `<div style="display:grid;grid-template-columns:repeat(7,1fr);gap:3px;">`;
+  // Empty cells before first day
+  for (let i = 0; i < startDow; i++) {
+    html += `<div style="min-height:52px;"></div>`;
+  }
+
+  for (let d = 1; d <= daysInMonth; d++) {
+    const date = new Date(mCalYear, mCalMonth, d);
+    const dow = date.getDay();
+    const dateKey = date.toISOString().split('T')[0];
+    const isToday = date.getTime() === today.getTime();
+    const isPast = date.getTime() < today.getTime();
+    const scheduledDays = schedule[dow] || [];
+    const logged = workoutsByDate[dateKey] || [];
+
+    let cellBg = 'var(--surface)';
+    let border = '1px solid var(--border)';
+    let dot = '';
+
+    if (isToday) {
+      border = '2px solid var(--accent)';
+      cellBg = 'rgba(0,229,200,0.06)';
+    }
+
+    if (logged.length > 0) {
+      // Completed
+      dot = `<div style="width:6px;height:6px;border-radius:50%;background:var(--green);margin:2px auto 0;"></div>`;
+    } else if (scheduledDays.length > 0 && !isPast) {
+      // Scheduled but not done
+      dot = `<div style="width:6px;height:6px;border-radius:50%;background:var(--accent);margin:2px auto 0;opacity:0.5;"></div>`;
+    } else if (scheduledDays.length > 0 && isPast) {
+      // Missed
+      dot = `<div style="width:6px;height:6px;border-radius:50%;background:var(--red);margin:2px auto 0;opacity:0.5;"></div>`;
+    }
+
+    const dayNum = `<div style="font-family:'Oswald',sans-serif;font-weight:${isToday?'700':'600'};font-size:0.82rem;color:${isToday?'var(--accent)':isPast?'var(--muted)':'var(--text)'};text-align:center;line-height:1;">${d}</div>`;
+
+    // Tap handler: if scheduled, load the plan day
+    const onclick = scheduledDays.length > 0 && !isPast
+      ? `onclick="mCalLoadDay(${dow})"`
+      : logged.length > 0
+      ? `onclick="mShowWorkout(${logged[0].id})"`
+      : '';
+
+    html += `<div style="min-height:52px;background:${cellBg};border:${border};border-radius:8px;padding:6px 2px;cursor:${onclick?'pointer':'default'};" ${onclick}>
+      ${dayNum}${dot}
+    </div>`;
+  }
+  html += `</div>`;
+
+  // Legend
+  html += `<div style="display:flex;gap:14px;margin-top:12px;justify-content:center;">
+    <div style="display:flex;align-items:center;gap:5px;font-size:0.65rem;color:var(--muted);"><div style="width:6px;height:6px;border-radius:50%;background:var(--green);"></div>Logged</div>
+    <div style="display:flex;align-items:center;gap:5px;font-size:0.65rem;color:var(--muted);"><div style="width:6px;height:6px;border-radius:50%;background:var(--accent);opacity:0.5;"></div>Scheduled</div>
+    <div style="display:flex;align-items:center;gap:5px;font-size:0.65rem;color:var(--muted);"><div style="width:6px;height:6px;border-radius:50%;background:var(--red);opacity:0.5;"></div>Missed</div>
+  </div>`;
+
+  // Upcoming schedule list
+  if (Object.keys(schedule).length > 0) {
+    html += `<div style="margin-top:16px;"><div style="font-family:'Oswald',sans-serif;font-weight:700;font-size:0.72rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--muted);margin-bottom:10px;display:flex;align-items:center;gap:8px;"><span style="width:3px;height:14px;background:var(--accent);border-radius:2px;display:block;"></span>Weekly Schedule</div>`;
+    DAY_NAMES.forEach((dn, i) => {
+      if (!schedule[i]) return;
+      schedule[i].forEach(s => {
+        const dayLabel = dn.charAt(0).toUpperCase() + dn.slice(1);
+        html += `<div style="display:flex;justify-content:space-between;align-items:center;padding:10px 12px;background:var(--surface2);border:1px solid var(--border);border-radius:8px;margin-bottom:6px;cursor:pointer;" onclick="mCalLoadDay(${i})">
+          <div>
+            <div style="font-family:'Oswald',sans-serif;font-weight:700;font-size:0.82rem;letter-spacing:0.04em;text-transform:uppercase;">${dayLabel}</div>
+            <div style="font-size:0.72rem;color:var(--muted);margin-top:2px;">${escHtml(s.day.name)} · ${s.day.exercises.length} exercises</div>
+          </div>
+          <div style="font-size:0.65rem;color:var(--accent);font-family:'Oswald',sans-serif;font-weight:700;letter-spacing:0.06em;">LOAD →</div>
+        </div>`;
+      });
+    });
+    html += `</div>`;
+  } else {
+    html += `<div style="text-align:center;padding:24px 16px;color:var(--muted);margin-top:16px;">
+      <div style="font-size:1.5rem;opacity:0.3;margin-bottom:8px;">📅</div>
+      <p style="font-size:0.82rem;line-height:1.6;">No plan schedule detected.<br>Import or create a plan with day names (e.g. "Tuesday — Upper Body") to see your weekly calendar.</p>
+    </div>`;
+  }
+
+  el.innerHTML = html;
+}
+
+function mCalPrev() { mCalMonth--; if (mCalMonth < 0) { mCalMonth = 11; mCalYear--; } mRenderPlanCalendar(); }
+function mCalNext() { mCalMonth++; if (mCalMonth > 11) { mCalMonth = 0; mCalYear++; } mRenderPlanCalendar(); }
+
+function mCalLoadDay(dow) {
+  const DAY_NAMES = ['sunday','monday','tuesday','wednesday','thursday','friday','saturday'];
+  const allPlans = [...state.userPlans];
+  for (const plan of allPlans) {
+    const dl = plan.planDays || (Array.isArray(plan.days) ? plan.days : []);
+    for (const day of dl) {
+      const nameLower = (day.name || '').toLowerCase();
+      if (nameLower.startsWith(DAY_NAMES[dow])) {
+        mLoadDay(day, plan.name);
+        return;
+      }
+    }
+  }
+  mToast('No plan day found for this day', 'error');
 }
 function mRenderMyPlans() {
   window._userPlanReg=state.userPlans;
@@ -4191,14 +4324,163 @@ function mPlayBeep(freq = 880, duration = 0.15, vol = 0.4) {
 }
 
 function mPlayTimerDone() {
-  mPlayBeep(880, 0.15, 0.5);
-  setTimeout(() => mPlayBeep(660, 0.15, 0.45), 200);
-  setTimeout(() => mPlayBeep(440, 0.3,  0.4),  400);
+  // 3-second alert: three ascending bursts with vibration
+  const pattern = [
+    [880, 0.18, 0.5,    0],
+    [660, 0.18, 0.45, 250],
+    [880, 0.18, 0.5,  500],
+    [660, 0.18, 0.45, 750],
+    [880, 0.18, 0.5, 1000],
+    [1100,0.25, 0.55,1250],
+    [880, 0.18, 0.5, 1600],
+    [660, 0.18, 0.45,1850],
+    [880, 0.18, 0.5, 2100],
+    [1100,0.35, 0.6, 2400],
+  ];
+  pattern.forEach(([freq, dur, vol, delay]) => {
+    setTimeout(() => mPlayBeep(freq, dur, vol), delay);
+  });
+  // Vibrate pattern if supported
+  if (navigator.vibrate) navigator.vibrate([200,100,200,100,200,150,300,100,300,150,400]);
+}
+
+// ─── SHAKE TO START/RESET REST TIMER ───
+// Single shake = start/reset timer, double-shake (within 1s) = cycle preset
+let mShakeLastTime = 0;
+let mShakeLastTrigger = 0;
+let mShakeDoubleTap = 0;
+const SHAKE_THRESHOLD = 18;  // m/s² — firm shake, won't false-trigger from walking
+const SHAKE_COOLDOWN = 600;  // ms between triggers
+const SHAKE_DOUBLE_WINDOW = 1000; // ms window for double-shake
+const SHAKE_PRESETS = [60, 90, 120, 180];
+let mShakePresetIdx = 1; // default 90s
+
+function mHandleShake(event) {
+  const acc = event.accelerationIncludingGravity || event.acceleration;
+  if (!acc) return;
+  const now = Date.now();
+  const force = Math.sqrt(acc.x*acc.x + acc.y*acc.y + acc.z*acc.z);
+  if (force < SHAKE_THRESHOLD) return;
+  if (now - mShakeLastTrigger < SHAKE_COOLDOWN) return;
+  mShakeLastTrigger = now;
+
+  // Double shake detection: cycle presets
+  if (now - mShakeDoubleTap < SHAKE_DOUBLE_WINDOW) {
+    mShakeDoubleTap = 0;
+    mShakePresetIdx = (mShakePresetIdx + 1) % SHAKE_PRESETS.length;
+    const newTime = SHAKE_PRESETS[mShakePresetIdx];
+    mTs = newTime; mTt = newTime; mTr = false;
+    clearInterval(mTi);
+    document.getElementById('m-timer-btn').textContent = 'Start';
+    document.getElementById('m-timer-disp').classList.remove('warn');
+    mTick();
+    mPlayBeep(1100, 0.08, 0.3);
+    mToast(`⏱ Rest timer: ${newTime}s`, '');
+    // Update active preset button
+    document.querySelectorAll('.timer-preset').forEach(b => b.classList.remove('active'));
+    return;
+  }
+  mShakeDoubleTap = now;
+
+  // Single shake: start or reset timer
+  if (mTr) {
+    // Timer is running — reset it
+    clearInterval(mTi);
+    mTr = false;
+    mTs = mTt;
+    document.getElementById('m-timer-btn').textContent = 'Start';
+    document.getElementById('m-timer-disp').classList.remove('warn');
+    mTick();
+    // Immediately start again
+    mTr = true;
+    document.getElementById('m-timer-btn').textContent = 'Pause';
+    mTi = setInterval(() => {
+      mTs--;
+      if (mTs <= 10) document.getElementById('m-timer-disp').classList.add('warn');
+      if (mTs <= 0) { clearInterval(mTi); mTr = false; document.getElementById('m-timer-btn').textContent = 'Start'; mTs = 0; mPlayTimerDone(); mToast('⏱ Rest done! Back to work!','success'); }
+      mTick();
+    }, 1000);
+  } else {
+    // Timer not running — start it
+    mTs = mTt;
+    mTick();
+    mTr = true;
+    document.getElementById('m-timer-btn').textContent = 'Pause';
+    mTi = setInterval(() => {
+      mTs--;
+      if (mTs <= 10) document.getElementById('m-timer-disp').classList.add('warn');
+      if (mTs <= 0) { clearInterval(mTi); mTr = false; document.getElementById('m-timer-btn').textContent = 'Start'; mTs = 0; mPlayTimerDone(); mToast('⏱ Rest done! Back to work!','success'); }
+      mTick();
+    }, 1000);
+  }
+  mPlayBeep(880, 0.08, 0.3);
+  if (navigator.vibrate) navigator.vibrate(80);
+}
+
+// Init shake listener — request permission on iOS 13+
+function mInitShakeTimer() {
+  if (typeof DeviceMotionEvent !== 'undefined' && typeof DeviceMotionEvent.requestPermission === 'function') {
+    // iOS 13+ requires user gesture to enable
+    const enableBtn = document.createElement('div');
+    enableBtn.id = 'm-shake-enable';
+    enableBtn.style.cssText = 'display:none;';
+    document.body.appendChild(enableBtn);
+    // We'll request permission when user first taps the shake FAB
+    window._mShakePermissionGranted = false;
+    window._mRequestShakePermission = function() {
+      DeviceMotionEvent.requestPermission().then(response => {
+        if (response === 'granted') {
+          window.addEventListener('devicemotion', mHandleShake);
+          window._mShakePermissionGranted = true;
+          mToast('📳 Shake timer enabled!', 'success');
+          mUpdateShakeFab(true);
+        }
+      }).catch(() => {});
+    };
+  } else if ('DeviceMotionEvent' in window) {
+    // Android / older iOS — just listen
+    window.addEventListener('devicemotion', mHandleShake);
+    window._mShakePermissionGranted = true;
+    mUpdateShakeFab(true);
+  }
+}
+
+let mShakeEnabled = true;
+function mToggleShake() {
+  if (!window._mShakePermissionGranted) {
+    // iOS: request permission on first tap
+    if (window._mRequestShakePermission) window._mRequestShakePermission();
+    return;
+  }
+  mShakeEnabled = !mShakeEnabled;
+  if (mShakeEnabled) {
+    window.addEventListener('devicemotion', mHandleShake);
+    mToast('📳 Shake timer ON', 'success');
+  } else {
+    window.removeEventListener('devicemotion', mHandleShake);
+    mToast('📳 Shake timer OFF', '');
+  }
+  mUpdateShakeFab(mShakeEnabled);
+}
+
+function mUpdateShakeFab(on) {
+  const fab = document.getElementById('m-shake-btn');
+  if (!fab) return;
+  if (on) {
+    fab.style.borderColor = 'var(--accent)';
+    fab.style.background = 'rgba(0,229,200,0.12)';
+    fab.querySelector('.shake-label').textContent = 'SHAKE';
+  } else {
+    fab.style.borderColor = 'var(--border)';
+    fab.style.background = 'var(--surface2)';
+    fab.querySelector('.shake-label').textContent = 'SHAKE';
+  }
 }
 
 // ─── INIT ───
 persistLoad();
 mRenderHome();
+mInitShakeTimer();
 
 // ─── FIRST RUN GUIDE ───
 if (!localStorage.getItem('hb_seen_guide')) {
