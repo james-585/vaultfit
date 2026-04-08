@@ -453,7 +453,7 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);overs
   <button id="m-fab-main" onclick="mToggleFabTray()" style="position:static;width:48px;height:48px;border-radius:50%;font-size:1.3rem;padding:0;z-index:2;background:var(--surface2);border:2px solid var(--border);color:var(--text);cursor:pointer;box-shadow:0 4px 20px rgba(0,0,0,0.5);transition:transform 0.2s,border-color 0.2s,background 0.2s;display:flex;align-items:center;justify-content:center;" title="Workout Tools">⚡</button>
   <!-- Child FABs (hidden by default) -->
   <button id="m-fab-rest" class="m-fab-child" onclick="mOpenModal('m-timer-modal');mCloseFabTray();" style="position:static;width:auto;border-radius:24px;padding:0 14px;height:40px;gap:6px;display:flex;flex-direction:row;align-items:center;font-family:'Oswald',sans-serif;font-weight:700;font-size:0.65rem;letter-spacing:0.06em;background:var(--surface2);border:2px solid var(--border);color:var(--text);cursor:pointer;box-shadow:0 4px 20px rgba(0,0,0,0.5);opacity:0;transform:scale(0.5) translateY(10px);pointer-events:none;transition:all 0.2s cubic-bezier(0.34,1.56,0.64,1);" title="Rest Timer"><span>⏱</span><span>REST</span></button>
-  <button id="m-shake-btn" class="m-fab-child" onclick="mToggleShake()" style="position:static;width:auto;border-radius:24px;padding:0 14px;height:40px;gap:6px;display:flex;flex-direction:row;align-items:center;font-family:'Oswald',sans-serif;font-weight:700;font-size:0.65rem;letter-spacing:0.06em;background:var(--surface2);border:2px solid var(--border);color:var(--text);cursor:pointer;box-shadow:0 4px 20px rgba(0,0,0,0.5);opacity:0;transform:scale(0.5) translateY(10px);pointer-events:none;transition:all 0.2s cubic-bezier(0.34,1.56,0.64,1) 0.04s;" title="Shake Timer"><span>📳</span><span class="shake-label">30s</span></button>
+  <button id="m-qt-btn" class="m-fab-child" onclick="mQuickTap()" style="position:static;width:auto;border-radius:24px;padding:0 14px;height:40px;gap:6px;display:flex;flex-direction:row;align-items:center;font-family:'Oswald',sans-serif;font-weight:700;font-size:0.65rem;letter-spacing:0.06em;background:var(--surface2);border:2px solid var(--border);color:var(--text);cursor:pointer;box-shadow:0 4px 20px rgba(0,0,0,0.5);opacity:0;transform:scale(0.5) translateY(10px);pointer-events:none;transition:all 0.2s cubic-bezier(0.34,1.56,0.64,1) 0.04s;" title="Quick Rest Timer"><span>⏱</span><span class="qt-label">30s</span></button>
   <button id="m-wake-btn" class="m-fab-child" onclick="mToggleWakeLock()" style="position:static;width:auto;border-radius:24px;padding:0 14px;height:40px;gap:6px;display:flex;flex-direction:row;align-items:center;font-family:'Oswald',sans-serif;font-weight:700;font-size:0.65rem;letter-spacing:0.06em;background:var(--surface2);border:2px solid var(--border);color:var(--text);cursor:pointer;box-shadow:0 4px 20px rgba(0,0,0,0.5);opacity:0;transform:scale(0.5) translateY(10px);pointer-events:none;transition:all 0.2s cubic-bezier(0.34,1.56,0.64,1) 0.08s;" title="Keep Screen On"><span>☀️</span><span>WAKE</span></button>
 </div>
 <!-- FAB backdrop (closes tray on tap) -->
@@ -4384,152 +4384,93 @@ function mCloseFabTray() {
   });
 }
 
-// ─── SHAKE TO START/RESET REST TIMER ───
-// Single shake = start/reset timer, double-shake (within 1s) = cycle preset
-let mShakeLastTime = 0;
-let mShakeLastTrigger = 0;
-let mShakeDoubleTap = 0;
-const SHAKE_THRESHOLD = 18;  // m/s² — firm shake, won't false-trigger from walking
-const SHAKE_COOLDOWN = 600;  // ms between triggers
-const SHAKE_DOUBLE_WINDOW = 1000; // ms window for double-shake
-const SHAKE_PRESETS = [30, 60, 90, 120, 180];
-let mShakePresetIdx = 0; // default 30s
+// ─── QUICK TAP REST TIMER ───
+// Single tap = start/restart timer at current preset
+// Multiple taps within 500ms = cycle through 30s increments (30→60→90→...→180→30)
+const QT_PRESETS = [30, 60, 90, 120, 150, 180];
+let mQtPresetIdx = 0;
+let mQtLastTap = 0;
+let mQtTapCount = 0;
+let mQtDelayTimer = null;
 
-function mHandleShake(event) {
-  const acc = event.accelerationIncludingGravity || event.acceleration;
-  if (!acc) return;
+function mQuickTap() {
   const now = Date.now();
-  const force = Math.sqrt(acc.x*acc.x + acc.y*acc.y + acc.z*acc.z);
-  if (force < SHAKE_THRESHOLD) return;
-  if (now - mShakeLastTrigger < SHAKE_COOLDOWN) return;
-  mShakeLastTrigger = now;
 
-  // Double shake detection: cycle presets
-  if (now - mShakeDoubleTap < SHAKE_DOUBLE_WINDOW) {
-    mShakeDoubleTap = 0;
-    mShakePresetIdx = (mShakePresetIdx + 1) % SHAKE_PRESETS.length;
-    const newTime = SHAKE_PRESETS[mShakePresetIdx];
-    mTs = newTime; mTt = newTime; mTr = false;
-    clearInterval(mTi);
-    document.getElementById('m-timer-btn').textContent = 'Start';
-    document.getElementById('m-timer-disp').classList.remove('warn');
-    mTick();
-    mPlayBeep(1100, 0.08, 0.3);
-    mToast(`⏱ Rest timer: ${newTime}s`, '');
-    mUpdateShakeFabLabel();
-    // Update active preset button
-    document.querySelectorAll('.timer-preset').forEach(b => b.classList.remove('active'));
-    return;
-  }
-  mShakeDoubleTap = now;
-
-  // Single shake: set timer to current shake preset, then start/restart
-  mTt = SHAKE_PRESETS[mShakePresetIdx];
-  if (mTr) {
-    // Timer is running — reset and restart
+  if (now - mQtLastTap < 500) {
+    // Multi-tap: cycle preset
+    mQtTapCount++;
+    clearTimeout(mQtDelayTimer);
+    mQtPresetIdx = (mQtPresetIdx + 1) % QT_PRESETS.length;
+    const newTime = QT_PRESETS[mQtPresetIdx];
+    // Update timer target but don't start yet — wait for taps to settle
+    mTt = newTime;
+    mTs = newTime;
     clearInterval(mTi);
     mTr = false;
-    mTs = mTt;
     document.getElementById('m-timer-btn').textContent = 'Start';
     document.getElementById('m-timer-disp').classList.remove('warn');
     mTick();
-    // Immediately start again
-    mTr = true;
-    document.getElementById('m-timer-btn').textContent = 'Pause';
-    mTi = setInterval(() => {
-      mTs--;
-      if (mTs <= 10) document.getElementById('m-timer-disp').classList.add('warn');
-      if (mTs <= 0) { clearInterval(mTi); mTr = false; document.getElementById('m-timer-btn').textContent = 'Start'; mTs = 0; mPlayTimerDone(); mToast('⏱ Rest done! Back to work!','success'); }
-      mTick();
-    }, 1000);
+    mPlayBeep(1100, 0.06, 0.25);
+    mUpdateQtLabel();
+    mToast(`⏱ Set to ${newTime}s`, '');
+    // After taps settle, auto-start
+    mQtDelayTimer = setTimeout(() => {
+      mQtStartTimer();
+      mQtTapCount = 0;
+    }, 600);
   } else {
-    // Timer not running — start it
-    mTs = mTt;
-    mTick();
-    mTr = true;
-    document.getElementById('m-timer-btn').textContent = 'Pause';
-    mTi = setInterval(() => {
-      mTs--;
-      if (mTs <= 10) document.getElementById('m-timer-disp').classList.add('warn');
-      if (mTs <= 0) { clearInterval(mTi); mTr = false; document.getElementById('m-timer-btn').textContent = 'Start'; mTs = 0; mPlayTimerDone(); mToast('⏱ Rest done! Back to work!','success'); }
-      mTick();
-    }, 1000);
+    // First tap: start/restart at current preset
+    mQtTapCount = 1;
+    mQtDelayTimer = setTimeout(() => {
+      if (mQtTapCount === 1) {
+        mQtStartTimer();
+      }
+      mQtTapCount = 0;
+    }, 500);
   }
+  mQtLastTap = now;
+}
+
+function mQtStartTimer() {
+  mTt = QT_PRESETS[mQtPresetIdx];
+  clearInterval(mTi);
+  mTs = mTt;
+  mTr = true;
+  document.getElementById('m-timer-btn').textContent = 'Pause';
+  document.getElementById('m-timer-disp').classList.remove('warn');
+  mTick();
+  mTi = setInterval(() => {
+    mTs--;
+    if (mTs <= 10) document.getElementById('m-timer-disp').classList.add('warn');
+    if (mTs <= 0) {
+      clearInterval(mTi); mTr = false;
+      document.getElementById('m-timer-btn').textContent = 'Start';
+      mTs = 0; mPlayTimerDone();
+      mToast('⏱ Rest done! Back to work!', 'success');
+    }
+    mTick();
+  }, 1000);
   mPlayBeep(880, 0.08, 0.3);
   if (navigator.vibrate) navigator.vibrate(80);
-  mToast(`⏱ ${mTt}s rest — go!`, 'success');
-}
-
-// Init shake listener — request permission on iOS 13+
-function mInitShakeTimer() {
-  if (typeof DeviceMotionEvent !== 'undefined' && typeof DeviceMotionEvent.requestPermission === 'function') {
-    // iOS 13+ requires user gesture to enable
-    const enableBtn = document.createElement('div');
-    enableBtn.id = 'm-shake-enable';
-    enableBtn.style.cssText = 'display:none;';
-    document.body.appendChild(enableBtn);
-    // We'll request permission when user first taps the shake FAB
-    window._mShakePermissionGranted = false;
-    window._mRequestShakePermission = function() {
-      DeviceMotionEvent.requestPermission().then(response => {
-        if (response === 'granted') {
-          window.addEventListener('devicemotion', mHandleShake);
-          window._mShakePermissionGranted = true;
-          mToast('📳 Shake timer enabled!', 'success');
-          mUpdateShakeFab(true);
-        }
-      }).catch(() => {});
-    };
-  } else if ('DeviceMotionEvent' in window) {
-    // Android / older iOS — just listen
-    window.addEventListener('devicemotion', mHandleShake);
-    window._mShakePermissionGranted = true;
-    mUpdateShakeFab(true);
-  }
-}
-
-let mShakeEnabled = true;
-function mToggleShake() {
-  if (!window._mShakePermissionGranted) {
-    // iOS: request permission on first tap
-    if (window._mRequestShakePermission) window._mRequestShakePermission();
-    return;
-  }
-  mShakeEnabled = !mShakeEnabled;
-  if (mShakeEnabled) {
-    window.addEventListener('devicemotion', mHandleShake);
-    mToast('📳 Shake timer ON', 'success');
-  } else {
-    window.removeEventListener('devicemotion', mHandleShake);
-    mToast('📳 Shake timer OFF', '');
-  }
-  mUpdateShakeFab(mShakeEnabled);
-}
-
-function mUpdateShakeFab(on) {
-  const fab = document.getElementById('m-shake-btn');
-  if (!fab) return;
-  if (on) {
+  // Flash the FAB to confirm
+  const fab = document.getElementById('m-qt-btn');
+  if (fab) {
     fab.style.borderColor = 'var(--accent)';
-    fab.style.background = 'rgba(0,229,200,0.12)';
-  } else {
-    fab.style.borderColor = 'var(--border)';
-    fab.style.background = 'var(--surface2)';
+    fab.style.background = 'rgba(0,229,200,0.2)';
+    setTimeout(() => { fab.style.borderColor = ''; fab.style.background = ''; }, 300);
   }
-  mUpdateShakeFabLabel();
 }
 
-function mUpdateShakeFabLabel() {
-  const fab = document.getElementById('m-shake-btn');
+function mUpdateQtLabel() {
+  const fab = document.getElementById('m-qt-btn');
   if (!fab) return;
-  const label = fab.querySelector('.shake-label');
-  if (label) label.textContent = SHAKE_PRESETS[mShakePresetIdx] + 's';
+  const label = fab.querySelector('.qt-label');
+  if (label) label.textContent = QT_PRESETS[mQtPresetIdx] + 's';
 }
 
 // ─── INIT ───
 persistLoad();
 mRenderHome();
-mInitShakeTimer();
 
 // ─── FIRST RUN GUIDE ───
 if (!localStorage.getItem('hb_seen_guide')) {
