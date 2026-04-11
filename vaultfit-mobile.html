@@ -718,9 +718,6 @@ const EXERCISES = [
   { name: 'KB Push Press', muscle: 'Shoulders', equip: 'Kettlebell', diff: 'Intermediate', icon: '⚡', desc: 'Leg-assisted overhead press for power' },
   { name: 'KB Bent-Over Row', muscle: 'Back', equip: 'Kettlebell', diff: 'Beginner', icon: '🚣', desc: 'Horizontal pull in hinge position' },
   { name: 'KB Renegade Row', muscle: 'Back', equip: 'Kettlebell', diff: 'Advanced', icon: '🔥', desc: 'Plank row with anti-rotation demand' },
-  { name: 'DB Pullover', muscle: 'Back', equip: 'Dumbbell', diff: 'Beginner', icon: '🦅', desc: 'Lying across bench, lower dumbbell behind head — lats and serratus stretch and contraction' },
-  { name: 'DB Chest-Supported Row', muscle: 'Back', equip: 'Dumbbell', diff: 'Beginner', icon: '🚣', desc: 'Lie face-down on incline bench, row dumbbells to hips — removes lower back from the equation' },
-  { name: 'DB Seal Row', muscle: 'Back', equip: 'Dumbbell', diff: 'Beginner', icon: '🚣', desc: 'Prone row on elevated flat bench — strict horizontal pull with zero body english' },
   { name: 'DB Straight-Arm Pulldown', muscle: 'Back', equip: 'Dumbbell', diff: 'Beginner', icon: '⬇️', desc: 'Standing, hinge forward, pull dumbbells down toward hips with straight arms — lat isolation' },
   { name: 'DB Gorilla Row', muscle: 'Back', equip: 'Dumbbell', diff: 'Intermediate', icon: '🦍', desc: 'Hinged stance with dumbbells on floor, alternate rowing each side — heavy bilateral pull' },
   { name: 'KB Gorilla Row', muscle: 'Back', equip: 'Kettlebell', diff: 'Intermediate', icon: '🦍', desc: 'Hinged stance over two kettlebells, alternate rowing each side — loaded hip hinge plus horizontal pull' },
@@ -842,6 +839,26 @@ const EXERCISES = [
   { name: 'KB Reverse Bent-Over Fly', muscle: 'Rear Delts', equip: 'Kettlebell', diff: 'Beginner', icon: '🦅', desc: 'Hinge forward and raise kettlebells laterally — rear delt and rhomboid isolation with kettlebell grip challenge' },
   { name: 'DB Russian Deadlift', muscle: 'Hamstrings', equip: 'Dumbbell', diff: 'Intermediate', icon: '🏋️', desc: 'Single-leg Romanian deadlift variation — balance on one leg while the other extends behind, demanding hip hinge strength and balance' },
   { name: 'KB Russian Deadlift', muscle: 'Hamstrings', equip: 'Kettlebell', diff: 'Intermediate', icon: '🏋️', desc: 'Single-leg deadlift with kettlebell — offset grip increases stability demand through the hip and core' },
+  // ── COMPOUND ADDITIONS ──
+  { name: 'DB Devil Press', muscle: 'Full Body', equip: 'Dumbbell', diff: 'Advanced', icon: '😈', desc: 'Burpee with dumbbells — drop to floor, push-up, jump up and snatch both dumbbells overhead in one explosive movement' },
+  { name: 'DB Man Maker', muscle: 'Full Body', equip: 'Dumbbell', diff: 'Advanced', icon: '🔥', desc: 'Push-up, renegade row left, renegade row right, squat clean, overhead press — the ultimate full-body complex' },
+  { name: 'KB Devil Press', muscle: 'Full Body', equip: 'Kettlebell', diff: 'Advanced', icon: '😈', desc: 'Burpee to double kettlebell snatch — explosive full-body conditioning movement' },
+  { name: 'DB Hang Clean', muscle: 'Full Body', equip: 'Dumbbell', diff: 'Intermediate', icon: '🏋️', desc: 'Hinge at hips, explosively pull dumbbells to shoulder height and catch in front rack — builds power and coordination' },
+  { name: 'DB Hang Clean & Press', muscle: 'Full Body', equip: 'Dumbbell', diff: 'Intermediate', icon: '🏋️', desc: 'Clean dumbbells from hang position to shoulders, then press overhead — full-body strength and power chain' },
+  { name: 'DB Thruster', muscle: 'Full Body', equip: 'Dumbbell', diff: 'Intermediate', icon: '🚀', desc: 'Front squat into overhead press in one fluid motion — high calorie burn, full-body compound' },
+  { name: 'DB Front Squat', muscle: 'Quads', equip: 'Dumbbell', diff: 'Intermediate', icon: '🦵', desc: 'Squat with dumbbells held at shoulder height — more core demand than goblet squat, trains front rack position' },
+  { name: 'DB Row to Press', muscle: 'Full Body', equip: 'Dumbbell', diff: 'Intermediate', icon: '🔄', desc: 'Floor press up, then flip to bent-over row, alternate each rep — hits chest, back and core with no bench needed' },
+  { name: 'DB Push Press', muscle: 'Shoulders', equip: 'Dumbbell', diff: 'Intermediate', icon: '🚀', desc: 'Use leg drive to initiate the press — allows heavier loads than strict press, builds explosive overhead strength' },
+  { name: 'DB Close-Grip Floor Press', muscle: 'Triceps', equip: 'Dumbbell', diff: 'Beginner', icon: '💎', desc: 'Floor press with dumbbells close together and elbows tucked — shifts emphasis from chest to triceps' },
+  { name: 'KB Swing to Squat', muscle: 'Full Body', equip: 'Kettlebell', diff: 'Intermediate', icon: '🔄', desc: 'Perform a swing, catch at the top and drop into a goblet squat — combines hip hinge and squat patterns' },
+  { name: 'DB Lunge to Press', muscle: 'Full Body', equip: 'Dumbbell', diff: 'Intermediate', icon: '🏋️', desc: 'Step into a forward lunge and press dumbbells overhead at the bottom — legs, shoulders and core in one movement' },
+  { name: 'KB Lunge to Press', muscle: 'Full Body', equip: 'Kettlebell', diff: 'Intermediate', icon: '🏋️', desc: 'Lunge with overhead press at the bottom position — unilateral leg and shoulder compound' },
+  { name: 'DB Split Squat to Curl', muscle: 'Full Body', equip: 'Dumbbell', diff: 'Beginner', icon: '🦵', desc: 'Hold split squat position and perform bicep curls — isometric leg work combined with arm training' },
+  { name: 'Sprawl', muscle: 'Full Body', equip: 'Bodyweight', diff: 'Intermediate', icon: '🤸', desc: 'Like a burpee without the push-up or jump — drop hips to floor, pop back up. Fast, conditioning-focused' },
+  { name: 'Skater Jump', muscle: 'Glutes', equip: 'Bodyweight', diff: 'Beginner', icon: '⛸️', desc: 'Lateral bounding from foot to foot — builds hip stability, glute medius strength and agility' },
+  { name: 'Cossack Squat', muscle: 'Quads', equip: 'Bodyweight', diff: 'Intermediate', icon: '🦵', desc: 'Deep lateral squat shifting weight fully to one leg while the other extends straight — mobility and unilateral strength' },
+  { name: 'DB Cossack Squat', muscle: 'Quads', equip: 'Dumbbell', diff: 'Intermediate', icon: '🦵', desc: 'Weighted Cossack squat holding a dumbbell goblet-style — adds load to deep lateral squat pattern' },
+  { name: 'KB Cossack Squat', muscle: 'Quads', equip: 'Kettlebell', diff: 'Intermediate', icon: '🦵', desc: 'Cossack squat holding kettlebell in goblet position — deep lateral squat with offset load' },
 ];
 
 const PLANS = [
@@ -1542,6 +1559,14 @@ const MET_VALUES = {
   'DB Russian Deadlift': 5.0, 'KB Russian Deadlift': 5.0,
   'Burpee': 10.0, 'Bear Crawl': 6.0, 'Inchworm': 4.0, 'Jumping Jack': 8.0,
   'Tuck Jump': 8.0,
+  // Compound additions
+  'DB Devil Press': 10.0, 'DB Man Maker': 10.0, 'KB Devil Press': 10.0,
+  'DB Hang Clean': 6.0, 'DB Hang Clean & Press': 7.0, 'DB Thruster': 7.0,
+  'DB Front Squat': 5.5,
+  'DB Row to Press': 6.0, 'DB Push Press': 6.0, 'DB Close-Grip Floor Press': 4.0,
+  'KB Swing to Squat': 7.5, 'DB Lunge to Press': 6.5, 'KB Lunge to Press': 6.5,
+  'DB Split Squat to Curl': 4.5, 'Sprawl': 9.0, 'Skater Jump': 8.0,
+  'Cossack Squat': 5.0, 'DB Cossack Squat': 5.5, 'KB Cossack Squat': 5.5,
 };
 
 function calcCalories(exercises, bodyWeightKg, durationMins) {
@@ -2657,6 +2682,8 @@ const UNILATERAL_EXERCISES = new Set([
   'Reverse Lunge to Knee Drive','Curtsy Lunge to Knee Drive','Lateral Lunge to Curtsy',
   'Seated Single-Arm Press','Single-Leg Glute Bridge J-Press',
   'Glute Bridge March','KB Russian Deadlift',
+  'DB Lunge to Press','KB Lunge to Press',
+  'DB Split Squat to Curl','Skater Jump','Cossack Squat','DB Cossack Squat','KB Cossack Squat',
 ]);
 
 function mIsUnilateral(name) {
