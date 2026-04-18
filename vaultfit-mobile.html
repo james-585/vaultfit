@@ -478,11 +478,11 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);overs
 <!-- FAB Tray -->
 <div id="m-fab-tray" style="position:fixed;bottom:calc(var(--nav-h) + var(--safe-bottom) + 14px);right:18px;z-index:9600;display:flex;flex-direction:column-reverse;align-items:flex-end;gap:10px;">
   <!-- Main toggle button -->
-  <button id="m-fab-main" onclick="mToggleFabTray()" style="position:static;width:48px;height:48px;border-radius:50%;font-size:1.3rem;padding:0;z-index:2;background:var(--surface2);border:2px solid var(--border);color:var(--text);cursor:pointer;box-shadow:0 4px 20px rgba(0,0,0,0.5);transition:transform 0.2s,border-color 0.2s,background 0.2s;display:flex;align-items:center;justify-content:center;" title="Workout Tools">⚡</button>
+  <button id="m-fab-main" onclick="event.stopPropagation();mToggleFabTray();" style="position:static;width:48px;height:48px;border-radius:50%;font-size:1.3rem;padding:0;z-index:2;background:var(--surface2);border:2px solid var(--border);color:var(--text);cursor:pointer;box-shadow:0 4px 20px rgba(0,0,0,0.5);transition:transform 0.2s,border-color 0.2s,background 0.2s;display:flex;align-items:center;justify-content:center;" title="Workout Tools">⚡</button>
   <!-- Child FABs (hidden by default) -->
-  <button id="m-fab-rest" class="m-fab-child" onclick="mOpenModal('m-timer-modal');mCloseFabTray();" style="position:static;width:auto;border-radius:24px;padding:0 14px;height:40px;gap:6px;display:flex;flex-direction:row;align-items:center;font-family:'Oswald',sans-serif;font-weight:700;font-size:0.65rem;letter-spacing:0.06em;background:var(--surface2);border:2px solid var(--border);color:var(--text);cursor:pointer;box-shadow:0 4px 20px rgba(0,0,0,0.5);opacity:0;transform:scale(0.5) translateY(10px);pointer-events:none;transition:all 0.2s cubic-bezier(0.34,1.56,0.64,1);" title="Rest Timer"><span>⏱</span><span>REST</span></button>
-  <button id="m-qt-btn" class="m-fab-child" onclick="mQuickTap()" style="position:static;width:auto;border-radius:24px;padding:0 14px;height:40px;gap:6px;display:flex;flex-direction:row;align-items:center;font-family:'Oswald',sans-serif;font-weight:700;font-size:0.65rem;letter-spacing:0.06em;background:var(--surface2);border:2px solid var(--border);color:var(--text);cursor:pointer;box-shadow:0 4px 20px rgba(0,0,0,0.5);opacity:0;transform:scale(0.5) translateY(10px);pointer-events:none;transition:all 0.2s cubic-bezier(0.34,1.56,0.64,1) 0.04s;" title="Quick Rest Timer"><span>⏱</span><span class="qt-label">30s</span></button>
-  <button id="m-wake-btn" class="m-fab-child" onclick="mToggleWakeLock()" style="position:static;width:auto;border-radius:24px;padding:0 14px;height:40px;gap:6px;display:flex;flex-direction:row;align-items:center;font-family:'Oswald',sans-serif;font-weight:700;font-size:0.65rem;letter-spacing:0.06em;background:var(--surface2);border:2px solid var(--border);color:var(--text);cursor:pointer;box-shadow:0 4px 20px rgba(0,0,0,0.5);opacity:0;transform:scale(0.5) translateY(10px);pointer-events:none;transition:all 0.2s cubic-bezier(0.34,1.56,0.64,1) 0.08s;" title="Keep Screen On"><span>☀️</span><span>WAKE</span></button>
+  <button id="m-fab-rest" class="m-fab-child" onclick="event.stopPropagation();mOpenModal('m-timer-modal');mCloseFabTray();" style="position:static;width:auto;border-radius:24px;padding:0 14px;height:40px;gap:6px;display:flex;flex-direction:row;align-items:center;font-family:'Oswald',sans-serif;font-weight:700;font-size:0.65rem;letter-spacing:0.06em;background:var(--surface2);border:2px solid var(--border);color:var(--text);cursor:pointer;box-shadow:0 4px 20px rgba(0,0,0,0.5);opacity:0;transform:scale(0.5) translateY(10px);pointer-events:none;transition:all 0.2s cubic-bezier(0.34,1.56,0.64,1);" title="Rest Timer"><span>⏱</span><span>REST</span></button>
+  <button id="m-qt-btn" class="m-fab-child" onclick="event.stopPropagation();mQuickTap();" style="position:static;width:auto;border-radius:24px;padding:0 14px;height:40px;gap:6px;display:flex;flex-direction:row;align-items:center;font-family:'Oswald',sans-serif;font-weight:700;font-size:0.65rem;letter-spacing:0.06em;background:var(--surface2);border:2px solid var(--border);color:var(--text);cursor:pointer;box-shadow:0 4px 20px rgba(0,0,0,0.5);opacity:0;transform:scale(0.5) translateY(10px);pointer-events:none;transition:all 0.2s cubic-bezier(0.34,1.56,0.64,1) 0.04s;" title="Quick Rest Timer"><span>⏱</span><span class="qt-label">30s</span></button>
+  <button id="m-wake-btn" class="m-fab-child" onclick="event.stopPropagation();mToggleWakeLock();" style="position:static;width:auto;border-radius:24px;padding:0 14px;height:40px;gap:6px;display:flex;flex-direction:row;align-items:center;font-family:'Oswald',sans-serif;font-weight:700;font-size:0.65rem;letter-spacing:0.06em;background:var(--surface2);border:2px solid var(--border);color:var(--text);cursor:pointer;box-shadow:0 4px 20px rgba(0,0,0,0.5);opacity:0;transform:scale(0.5) translateY(10px);pointer-events:none;transition:all 0.2s cubic-bezier(0.34,1.56,0.64,1) 0.08s;" title="Keep Screen On"><span>☀️</span><span>WAKE</span></button>
 </div>
 <!-- FAB backdrop (closes tray on tap) -->
 <div id="m-fab-backdrop" style="display:none;position:fixed;inset:0;z-index:9599;background:rgba(0,0,0,0.3);backdrop-filter:blur(2px);" onclick="mCloseFabTray()"></div>
@@ -4699,6 +4699,7 @@ function wmTickSet(ei, si) {
   const set = wmState.exercises[ei].sets[si];
   set.done = !set.done;
   wmUpdateSetUI(ei, si);
+  wmPersist();
   if (wmSetDone(set) && navigator.vibrate) navigator.vibrate(40);
   if (wmSetDone(set)) mQtStartTimer();
 }
@@ -4717,6 +4718,7 @@ function wmTickSide(ei, si, side) {
     btn.textContent = val ? '✓' : side;
   }
   wmUpdateSetUI(ei, si);
+  wmPersist();
   if (navigator.vibrate) navigator.vibrate(40);
   if (wmSetDone(set)) mQtStartTimer();
 }
@@ -4769,6 +4771,7 @@ function wmEditSet(ei, si, field, val) {
   if (field === 'reps') set.reps = num;
   else if (field === 'time') set.time = num;
   else if (field === 'weight') set.weight = num;
+  wmPersist();
 }
 
 // A set counts as done when both sides are ticked (unilateral) or the single tick is done (bilateral)
@@ -4781,19 +4784,76 @@ function wmAllDone(sets)   { return sets.every(s => wmSetDone(s)); }
 function wmToggleSw() {
   if (!wmState) return;
   if (wmState.swInterval) {
-    // Pause
     clearInterval(wmState.swInterval);
     wmState.swInterval = null;
+    wmPersist();
     const lbl = document.getElementById('wm-sw-label');
     if (lbl) lbl.textContent = 'Tap to resume';
   } else {
-    // Start / Resume
     if (!wmState.startTime) wmState.startTime = Date.now() - (wmState.elapsed * 1000);
     wmStartSw();
+    wmPersist();
     const el = document.getElementById('wm-sw-display');
     if (el) el.classList.remove('inactive');
     const lbl = document.getElementById('wm-sw-label');
     if (lbl) lbl.textContent = 'Running';
+  }
+}
+
+const WM_KEY = 'hb_active_workout';
+
+function wmPersist() {
+  if (!wmState) { localStorage.removeItem(WM_KEY); return; }
+  try {
+    const toSave = {
+      name: wmState.name,
+      planName: wmState.planName,
+      dayName: wmState.dayName,
+      exercises: wmState.exercises,
+      startTime: wmState.startTime,
+      elapsed: wmState.elapsed,
+      rpe: wmState.rpe,
+      planCtx: mLoadedPlanCtx,
+    };
+    localStorage.setItem(WM_KEY, JSON.stringify(toSave));
+  } catch(e) {}
+}
+
+function wmRestoreIfActive() {
+  try {
+    const raw = localStorage.getItem(WM_KEY);
+    if (!raw) return;
+    const saved = JSON.parse(raw);
+    if (!saved || !saved.exercises) return;
+
+    wmState = {
+      name: saved.name,
+      planName: saved.planName,
+      dayName: saved.dayName,
+      exercises: saved.exercises,
+      startTime: saved.startTime,
+      elapsed: saved.elapsed || 0,
+      swInterval: null,
+      rpe: saved.rpe || null,
+    };
+    mLoadedPlanCtx = saved.planCtx || null;
+
+    wmRender();
+
+    // If stopwatch was running (startTime set), resume it
+    if (saved.startTime) {
+      // Recalculate elapsed to account for time away
+      wmState.elapsed = Math.floor((Date.now() - saved.startTime) / 1000);
+      wmStartSw();
+      const el = document.getElementById('wm-sw-display');
+      if (el) el.classList.remove('inactive');
+      const lbl = document.getElementById('wm-sw-label');
+      if (lbl) lbl.textContent = 'Running';
+    }
+
+    mToast('Workout resumed', 'success');
+  } catch(e) {
+    localStorage.removeItem(WM_KEY);
   }
 }
 
@@ -4802,6 +4862,8 @@ function wmStartSw() {
   wmState.swInterval = setInterval(() => {
     wmState.elapsed = Math.floor((Date.now() - wmState.startTime) / 1000);
     wmTickDisplay();
+    // Persist every 10s to avoid hammering localStorage every second
+    if (wmState.elapsed % 10 === 0) wmPersist();
   }, 1000);
 }
 
@@ -4941,6 +5003,7 @@ function wmSaveWorkout() {
   clearInterval(wmState.swInterval);
   document.getElementById('wm-overlay')?.remove();
   wmState = null;
+  wmPersist(); // clears localStorage
 
   mRenderHome();
   mRenderLog();
@@ -5033,6 +5096,7 @@ function mUpdateQtLabel() {
 // ─── INIT ───
 persistLoad();
 mRenderHome();
+wmRestoreIfActive();
 
 // ─── FIRST RUN GUIDE ───
 if (!localStorage.getItem('hb_seen_guide')) {
