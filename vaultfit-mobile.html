@@ -250,6 +250,33 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);overs
 /* SHOW WORKOUT OVERLAY */
 
 
+/* ── WORKOUT MODE ── */
+.wm-overlay{position:fixed;inset:0;z-index:9500;background:var(--bg);display:flex;flex-direction:column;overflow:hidden;}
+.wm-header{flex-shrink:0;padding:16px 18px 12px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;gap:10px;}
+.wm-title{font-family:'Oswald',sans-serif;font-weight:700;font-size:1rem;letter-spacing:0.04em;text-transform:uppercase;flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.wm-sw{font-family:'Oswald',sans-serif;font-weight:700;font-size:1.4rem;color:var(--accent);letter-spacing:0.04em;flex-shrink:0;}
+.wm-finish-btn{font-family:'Oswald',sans-serif;font-weight:700;font-size:0.7rem;letter-spacing:0.08em;text-transform:uppercase;padding:8px 14px;border-radius:7px;background:var(--accent);color:#000;border:none;cursor:pointer;flex-shrink:0;}
+.wm-body{flex:1;overflow-y:auto;padding:10px 14px 120px;-webkit-overflow-scrolling:touch;}
+.wm-ex{background:var(--surface);border:1px solid var(--border);border-radius:12px;margin-bottom:10px;overflow:hidden;}
+.wm-ex.completed{border-color:rgba(0,214,143,0.3);background:rgba(0,214,143,0.04);}
+.wm-ex-hdr{padding:12px 14px 8px;display:flex;justify-content:space-between;align-items:flex-start;gap:8px;}
+.wm-ex-name{font-family:'Oswald',sans-serif;font-weight:700;font-size:1rem;letter-spacing:0.03em;text-transform:uppercase;flex:1;}
+.wm-ex-meta{font-size:0.68rem;color:var(--muted);margin-top:2px;}
+.wm-sets{padding:0 14px 12px;display:flex;flex-direction:column;gap:6px;}
+.wm-set{display:grid;grid-template-columns:24px 1fr 1fr 1fr auto;gap:6px;align-items:center;padding:8px 10px;background:var(--surface2);border-radius:8px;border:1px solid var(--border);transition:all 0.15s;}
+.wm-set.done{background:rgba(0,214,143,0.08);border-color:rgba(0,214,143,0.3);}
+.wm-set-num{font-family:'Oswald',sans-serif;font-weight:700;font-size:0.75rem;color:var(--muted);text-align:center;}
+.wm-set-input{background:var(--bg);border:1px solid var(--border);color:var(--text);padding:7px 6px;border-radius:6px;font-family:'Inter',sans-serif;font-size:0.85rem;text-align:center;width:100%;-webkit-appearance:none;}
+.wm-set-input:focus{outline:none;border-color:var(--accent);}
+.wm-set-lbl{font-size:0.56rem;color:var(--muted);text-align:center;font-family:'Oswald',sans-serif;font-weight:600;letter-spacing:0.07em;text-transform:uppercase;margin-bottom:2px;}
+.wm-tick{width:34px;height:34px;border-radius:8px;border:2px solid var(--border);background:none;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:1rem;transition:all 0.15s;flex-shrink:0;}
+.wm-tick:active{transform:scale(0.9);}
+.wm-tick.done{background:var(--green);border-color:var(--green);color:#000;}
+.wm-progress{height:3px;background:var(--border);}
+.wm-progress-fill{height:100%;background:var(--accent);transition:width 0.3s ease;}
+/* Finish sheet */
+.wm-finish-sheet{position:absolute;bottom:0;left:0;right:0;background:var(--surface);border-radius:20px 20px 0 0;padding:20px 18px;padding-bottom:calc(20px + env(safe-area-inset-bottom,0px));box-shadow:0 -8px 40px rgba(0,0,0,0.6);animation:sheetUp 0.3s cubic-bezier(0.34,1.56,0.64,1);}
+
 ::-webkit-scrollbar{width:0;height:0}
 </style>
 </head>
@@ -448,7 +475,7 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);overs
   <button class="nav-tab" id="tab-profile" onclick="mShowPage('profile')"><span class="tab-icon">👤</span><span class="tab-label">Profile</span></button>
 </nav>
 <!-- FAB Tray -->
-<div id="m-fab-tray" style="position:fixed;bottom:calc(var(--nav-h) + var(--safe-bottom) + 14px);right:18px;z-index:90;display:flex;flex-direction:column-reverse;align-items:flex-end;gap:10px;">
+<div id="m-fab-tray" style="position:fixed;bottom:calc(var(--nav-h) + var(--safe-bottom) + 14px);right:18px;z-index:9600;display:flex;flex-direction:column-reverse;align-items:flex-end;gap:10px;">
   <!-- Main toggle button -->
   <button id="m-fab-main" onclick="mToggleFabTray()" style="position:static;width:48px;height:48px;border-radius:50%;font-size:1.3rem;padding:0;z-index:2;background:var(--surface2);border:2px solid var(--border);color:var(--text);cursor:pointer;box-shadow:0 4px 20px rgba(0,0,0,0.5);transition:transform 0.2s,border-color 0.2s,background 0.2s;display:flex;align-items:center;justify-content:center;" title="Workout Tools">⚡</button>
   <!-- Child FABs (hidden by default) -->
@@ -457,7 +484,7 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);overs
   <button id="m-wake-btn" class="m-fab-child" onclick="mToggleWakeLock()" style="position:static;width:auto;border-radius:24px;padding:0 14px;height:40px;gap:6px;display:flex;flex-direction:row;align-items:center;font-family:'Oswald',sans-serif;font-weight:700;font-size:0.65rem;letter-spacing:0.06em;background:var(--surface2);border:2px solid var(--border);color:var(--text);cursor:pointer;box-shadow:0 4px 20px rgba(0,0,0,0.5);opacity:0;transform:scale(0.5) translateY(10px);pointer-events:none;transition:all 0.2s cubic-bezier(0.34,1.56,0.64,1) 0.08s;" title="Keep Screen On"><span>☀️</span><span>WAKE</span></button>
 </div>
 <!-- FAB backdrop (closes tray on tap) -->
-<div id="m-fab-backdrop" style="display:none;position:fixed;inset:0;z-index:89;background:rgba(0,0,0,0.3);backdrop-filter:blur(2px);" onclick="mCloseFabTray()"></div>
+<div id="m-fab-backdrop" style="display:none;position:fixed;inset:0;z-index:9599;background:rgba(0,0,0,0.3);backdrop-filter:blur(2px);" onclick="mCloseFabTray()"></div>
 
 <!-- FIRST RUN GUIDE -->
 <div class="modal-overlay" id="m-firstrun-modal" style="display:none;">
@@ -2800,6 +2827,116 @@ function mSaveWorkout() {
   mRenderHome();
   const cRange=calcCalorieRange(exercises,bw,dur||null);
   mToast(`✓ "${name}" saved — ~${cRange.low}–${cRange.high} kcal (estimate)`,'success');
+  // Auto-progression: update plan if workout came from a plan day
+  mAutoProgress(exercises);
+}
+
+// ─── AUTO-PROGRESSION ENGINE ───
+// After saving a workout loaded from a plan, checks if performance met/exceeded
+// the plan prescription. If so and 14+ days since last bump, progresses the plan.
+// Weight jumps respect available equipment: DB [5, 10], KB [10, 16].
+
+const AP_EQUIPMENT = {
+  'DB': [5, 8, 10],    // 8 is Zottman weight, 5 and 10 are real DBs
+  'KB': [10, 16],
+};
+const AP_COMPOUND_KEYWORDS = ['squat','deadlift','press','row','swing','clean','snatch','lunge','thruster','bridge','walk','push-up','curtsy'];
+const AP_FORTNIGHT_MS = 14 * 86400000;
+
+function mAutoProgress(loggedExercises) {
+  if (!mLoadedPlanCtx) return; // wasn't loaded from a plan
+  const { planId, dayIdx } = mLoadedPlanCtx;
+  const plan = state.userPlans.find(p => p.id === planId);
+  if (!plan) return;
+  const dl = plan.planDays || [];
+  const planDay = dl[dayIdx];
+  if (!planDay) return;
+
+  // Ensure progression tracking object exists
+  if (!plan._progressionLog) plan._progressionLog = {};
+
+  const now = Date.now();
+  let changes = [];
+
+  // Build lookup of logged exercises (merge bilateral sides back to base name)
+  const logged = {};
+  loggedExercises.forEach(e => {
+    const base = e.name.replace(/ \(Left\)$/, '').replace(/ \(Right\)$/, '');
+    if (!logged[base]) {
+      logged[base] = { sets: e.sets, reps: e.reps, time: e.time, weight: e.weight, trackType: e.trackType };
+    }
+    // Don't double-count bilateral — plan prescribes per-arm, logged per-arm
+  });
+
+  planDay.exercises.forEach((planEx, exIdx) => {
+    const base = planEx.name;
+    const log = logged[base];
+    if (!log) return; // exercise not in logged workout
+
+    // Check fortnight cooldown
+    const progKey = `${dayIdx}_${exIdx}`;
+    const lastBump = plan._progressionLog[progKey] || 0;
+    if (now - lastBump < AP_FORTNIGHT_MS) return; // too soon
+
+    const tt = planEx.trackType || 'reps';
+
+    if (tt === 'time') {
+      // Time-based: did they meet or exceed the prescribed time?
+      const prescribed = planEx.time || 0;
+      if (log.time >= prescribed && log.sets >= planEx.sets) {
+        planEx.time = prescribed + 5;
+        plan._progressionLog[progKey] = now;
+        changes.push(`${base}: ${prescribed}s → ${planEx.time}s`);
+      }
+    } else {
+      // Reps-based: did they meet or exceed prescribed reps and weight?
+      const pReps = planEx.reps || 0;
+      const pWeight = planEx.weight || 0;
+      const pSets = planEx.sets || 0;
+
+      if (log.reps >= pReps && log.weight >= pWeight && log.sets >= pSets) {
+        // Determine if this is compound or isolation
+        const isCompound = AP_COMPOUND_KEYWORDS.some(k => base.toLowerCase().includes(k));
+        const repCeiling = isCompound ? 12 : 15;
+
+        if (pReps >= repCeiling) {
+          // Hit rep ceiling — try to jump weight
+          const prefix = base.startsWith('KB') ? 'KB' : 'DB';
+          const available = AP_EQUIPMENT[prefix] || [];
+          const nextWeight = available.find(w => w > pWeight);
+
+          if (nextWeight) {
+            // Jump weight, reset reps
+            const resetReps = isCompound ? 8 : 10;
+            planEx.weight = nextWeight;
+            planEx.reps = resetReps;
+            plan._progressionLog[progKey] = now;
+            changes.push(`${base}: ${pReps}reps@${pWeight}kg → ${resetReps}reps@${nextWeight}kg`);
+          } else {
+            // No heavier weight available — keep pushing reps beyond ceiling
+            planEx.reps = pReps + 1;
+            plan._progressionLog[progKey] = now;
+            changes.push(`${base}: ${pReps} → ${planEx.reps} reps (max weight)`);
+          }
+        } else {
+          // Below rep ceiling — add 1 rep
+          planEx.reps = pReps + 1;
+          plan._progressionLog[progKey] = now;
+          changes.push(`${base}: ${pReps} → ${planEx.reps} reps`);
+        }
+      }
+    }
+  });
+
+  if (changes.length > 0) {
+    persistSave();
+    setTimeout(() => {
+      mToast(`📈 Plan updated: ${changes.length} exercise${changes.length>1?'s':''} progressed`, 'success');
+    }, 1500);
+  }
+
+  // Clear loaded context
+  mLoadedPlanCtx = null;
 }
 
 // ─── EXERCISES ───
@@ -3377,20 +3514,11 @@ function mOpenPlanDetail(plan) {
   loadBtn.onclick=()=>{if(dl[0])mLoadDay(dl[0],plan.name);mCloseModal('m-plan-modal');};
   mOpenModal('m-plan-modal');
 }
-function mLoadDay(day,planName) {
-  document.getElementById('m-wname').value=`${planName} — ${day.name}`;
-  document.getElementById('m-ex-rows').innerHTML='';
-  (day.exercises||[]).forEach(e=>{
-    mAddRow(e.name);
-    const rows=document.querySelectorAll('#m-ex-rows .ex-row-m');
-    const row=rows[rows.length-1];
-    const inputs=row.querySelectorAll('.mini-input');
-    if(inputs[0]) inputs[0].value=e.sets||'';
-    if(inputs[1]) inputs[1].value=e.trackType==='time'?(e.time||0):(e.reps||0);
-    if(inputs[2]) inputs[2].value=e.weight||'';
-    if(e.trackType==='time'){const btns=row.querySelectorAll('.type-pill button');btns[0].classList.remove('active');btns[1].classList.add('active');row.dataset.trackType='time';}
-  });
-  mShowPage('home'); mToast(`✓ "${day.name}" loaded!`,'success');
+// Track loaded plan context for auto-progression
+let mLoadedPlanCtx = null; // { planId, dayIdx, planName, dayName }
+
+function mLoadDay(day, planName) {
+  mStartWorkoutMode(day, planName);
 }
 
 // ─── EDIT WORKOUT ───
@@ -4411,7 +4539,392 @@ function mCloseFabTray() {
   });
 }
 
-// ─── QUICK TAP REST TIMER ───
+// ─── WORKOUT MODE ───
+// Full-screen session tracker: scrollable exercise list, per-set tick boxes,
+// editable reps/weight, running stopwatch, RPE capture on finish.
+
+let wmState = null; // { planCtx, exercises: [{name,sets:[{reps,weight,time,trackType,done}]}], startTime, swInterval, elapsed }
+
+function mStartWorkoutMode(day, planName) {
+  // Build exercise list from plan day
+  const exercises = (day.exercises || []).map(e => {
+    const baseName = e.name.replace(/ \(Left\)$/, '').replace(/ \(Right\)$/, '');
+    const isUnilateral = mIsUnilateral(baseName);
+    return {
+      name: baseName,
+      trackType: e.trackType || 'reps',
+      unilateral: isUnilateral,
+      sets: Array.from({ length: e.sets || 1 }, () => ({
+        reps: e.trackType === 'time' ? 0 : (e.reps || 0),
+        time: e.trackType === 'time' ? (e.time || 0) : 0,
+        weight: e.weight || 0,
+        trackType: e.trackType || 'reps',
+        done: isUnilateral ? false : false,   // for bilateral
+        doneL: isUnilateral ? false : undefined, // for unilateral
+        doneR: isUnilateral ? false : undefined,
+      }))
+    };
+  });
+
+  wmState = {
+    name: `${planName} — ${day.name}`,
+    planName, dayName: day.name,
+    exercises,
+    startTime: Date.now(),
+    elapsed: 0,
+    swInterval: null,
+    rpe: null,
+  };
+
+  // Store plan context for auto-progression
+  mLoadedPlanCtx = null;
+  for (const plan of state.userPlans) {
+    if (plan.name === planName) {
+      const dl = plan.planDays || [];
+      const idx = dl.indexOf(day);
+      if (idx >= 0) mLoadedPlanCtx = { planId: plan.id, dayIdx: idx, planName, dayName: day.name };
+      break;
+    }
+  }
+
+  wmRender();
+  wmStartSw();
+}
+
+function wmRender() {
+  // Remove any existing overlay
+  const existing = document.getElementById('wm-overlay');
+  if (existing) existing.remove();
+
+  const overlay = document.createElement('div');
+  overlay.id = 'wm-overlay';
+  overlay.className = 'wm-overlay';
+
+  // Total sets progress
+  const totalSets = wmState.exercises.reduce((s, e) => s + e.sets.length, 0);
+  const doneSets  = wmState.exercises.reduce((s, e) => s + wmCountDone(e.sets), 0);
+  const pct = totalSets > 0 ? Math.round((doneSets / totalSets) * 100) : 0;
+
+  overlay.innerHTML = `
+    <div class="wm-header">
+      <div>
+        <div class="wm-title">${escHtml(wmState.dayName)}</div>
+        <div style="font-size:0.62rem;color:var(--muted);margin-top:1px;">${doneSets}/${totalSets} sets</div>
+      </div>
+      <div class="wm-sw" id="wm-sw-display">0:00</div>
+      <button class="wm-finish-btn" onclick="wmFinish()">Finish</button>
+    </div>
+    <div class="wm-progress"><div class="wm-progress-fill" id="wm-progress-fill" style="width:${pct}%"></div></div>
+    <div class="wm-body" id="wm-body">
+      ${wmState.exercises.map((ex, ei) => wmRenderExercise(ex, ei)).join('')}
+    </div>`;
+
+  document.body.appendChild(overlay);
+
+  // Update stopwatch display
+  wmTickDisplay();
+}
+
+function wmRenderExercise(ex, ei) {
+  const allDone = wmAllDone(ex.sets);
+  const hint = mGetSuggestion(ex.name);
+  const hintHtml = hint ? `<div style="font-size:0.65rem;color:var(--accent);margin-top:2px;">⬆ ${escHtml(hint.text)}</div>` : '';
+
+  const setsHtml = ex.sets.map((set, si) => {
+    const isTime = set.trackType === 'time';
+    const val = isTime ? set.time : set.reps;
+    const setDone = wmSetDone(set);
+
+    if (ex.unilateral) {
+      return `<div class="wm-set${setDone ? ' done' : ''}" id="wm-set-${ei}-${si}" style="grid-template-columns:24px 1fr 1fr auto auto;">
+        <div class="wm-set-num">${si + 1}</div>
+        <div>
+          <div class="wm-set-lbl">${isTime ? 'Secs' : 'Reps'}</div>
+          <input class="wm-set-input" type="number" min="0" value="${val||''}" placeholder="${isTime?'30':'10'}"
+            onchange="wmEditSet(${ei},${si},'${isTime?'time':'reps'}',this.value)">
+        </div>
+        <div>
+          <div class="wm-set-lbl">kg</div>
+          <input class="wm-set-input" type="number" min="0" step="0.5" value="${set.weight||''}" placeholder="—"
+            onchange="wmEditSet(${ei},${si},'weight',this.value)">
+        </div>
+        <button class="wm-tick${set.doneL ? ' done' : ''}" id="wm-tick-${ei}-${si}-L" onclick="wmTickSide(${ei},${si},'L')" style="width:38px;height:34px;font-size:0.7rem;letter-spacing:0.04em;">
+          ${set.doneL ? '✓' : 'L'}
+        </button>
+        <button class="wm-tick${set.doneR ? ' done' : ''}" id="wm-tick-${ei}-${si}-R" onclick="wmTickSide(${ei},${si},'R')" style="width:38px;height:34px;font-size:0.7rem;letter-spacing:0.04em;">
+          ${set.doneR ? '✓' : 'R'}
+        </button>
+      </div>`;
+    } else {
+      return `<div class="wm-set${setDone ? ' done' : ''}" id="wm-set-${ei}-${si}">
+        <div class="wm-set-num">${si + 1}</div>
+        <div>
+          <div class="wm-set-lbl">${isTime ? 'Secs' : 'Reps'}</div>
+          <input class="wm-set-input" type="number" min="0" value="${val||''}" placeholder="${isTime?'30':'10'}"
+            onchange="wmEditSet(${ei},${si},'${isTime?'time':'reps'}',this.value)">
+        </div>
+        <div>
+          <div class="wm-set-lbl">kg</div>
+          <input class="wm-set-input" type="number" min="0" step="0.5" value="${set.weight||''}" placeholder="—"
+            onchange="wmEditSet(${ei},${si},'weight',this.value)">
+        </div>
+        <div></div>
+        <button class="wm-tick${setDone ? ' done' : ''}" id="wm-tick-${ei}-${si}" onclick="wmTickSet(${ei},${si})">
+          ${setDone ? '✓' : ''}
+        </button>
+      </div>`;
+    }
+  }).join('');
+
+  return `<div class="wm-ex${allDone ? ' completed' : ''}" id="wm-ex-${ei}">
+    <div class="wm-ex-hdr">
+      <div>
+        <div class="wm-ex-name">${escHtml(ex.name)}</div>
+        <div class="wm-ex-meta">${ex.sets.length} sets${ex.unilateral ? ' · L &amp; R' : ''}</div>
+        ${hintHtml}
+      </div>
+      <div style="font-size:0.75rem;color:${allDone?'var(--green)':'var(--muted)'};">
+        ${allDone ? '✓' : wmCountDone(ex.sets) + '/' + ex.sets.length}
+      </div>
+    </div>
+    <div class="wm-sets">${setsHtml}</div>
+  </div>`;
+}
+function wmTickSet(ei, si) {
+  if (!wmState) return;
+  const set = wmState.exercises[ei].sets[si];
+  set.done = !set.done;
+  wmUpdateSetUI(ei, si);
+  if (wmSetDone(set) && navigator.vibrate) navigator.vibrate(40);
+  if (wmSetDone(set)) mQtStartTimer();
+}
+
+function wmTickSide(ei, si, side) {
+  if (!wmState) return;
+  const set = wmState.exercises[ei].sets[si];
+  if (side === 'L') set.doneL = !set.doneL;
+  else set.doneR = !set.doneR;
+
+  // Update individual side button
+  const btn = document.getElementById(`wm-tick-${ei}-${si}-${side}`);
+  if (btn) {
+    const val = side === 'L' ? set.doneL : set.doneR;
+    btn.classList.toggle('done', val);
+    btn.textContent = val ? '✓' : side;
+  }
+  wmUpdateSetUI(ei, si);
+  if (navigator.vibrate) navigator.vibrate(40);
+  // Auto-start timer only when both sides done
+  if (wmSetDone(set)) mQtStartTimer();
+}
+
+function wmUpdateSetUI(ei, si) {
+  if (!wmState) return;
+  const set = wmState.exercises[ei].sets[si];
+  const ex = wmState.exercises[ei];
+  const setDone = wmSetDone(set);
+
+  // Update set row
+  const setEl = document.getElementById(`wm-set-${ei}-${si}`);
+  if (setEl) {
+    setEl.classList.toggle('done', setDone);
+    if (!ex.unilateral) {
+      const tick = document.getElementById(`wm-tick-${ei}-${si}`);
+      if (tick) { tick.classList.toggle('done', setDone); tick.textContent = setDone ? '✓' : ''; }
+    }
+  }
+
+  // Update exercise card
+  const allDone = wmAllDone(ex.sets);
+  const exEl = document.getElementById(`wm-ex-${ei}`);
+  if (exEl) {
+    exEl.classList.toggle('completed', allDone);
+    const counter = exEl.querySelector('.wm-ex-hdr > div:last-child');
+    if (counter) {
+      counter.style.color = allDone ? 'var(--green)' : 'var(--muted)';
+      counter.textContent = allDone ? '✓' : wmCountDone(ex.sets) + '/' + ex.sets.length;
+    }
+  }
+
+  // Update global progress bar + header count
+  const totalSets = wmState.exercises.reduce((s, e) => s + e.sets.length, 0);
+  const doneSets  = wmState.exercises.reduce((s, e) => s + wmCountDone(e.sets), 0);
+  const pct = totalSets > 0 ? Math.round((doneSets / totalSets) * 100) : 0;
+  const fill = document.getElementById('wm-progress-fill');
+  if (fill) fill.style.width = pct + '%';
+  const overlay = document.getElementById('wm-overlay');
+  if (overlay) {
+    const sub = overlay.querySelector('.wm-header > div > div:last-child');
+    if (sub) sub.textContent = `${doneSets}/${totalSets} sets`;
+  }
+}
+
+function wmEditSet(ei, si, field, val) {
+  if (!wmState) return;
+  const set = wmState.exercises[ei].sets[si];
+  const num = parseFloat(val) || 0;
+  if (field === 'reps') set.reps = num;
+  else if (field === 'time') set.time = num;
+  else if (field === 'weight') set.weight = num;
+}
+
+// A set counts as done when both sides are ticked (unilateral) or the single tick is done (bilateral)
+function wmSetDone(set) {
+  return set.doneL !== undefined ? (set.doneL && set.doneR) : set.done;
+}
+function wmCountDone(sets) { return sets.filter(s => wmSetDone(s)).length; }
+function wmAllDone(sets)   { return sets.every(s => wmSetDone(s)); }
+
+function wmStartSw() {
+  if (!wmState) return;
+  wmState.swInterval = setInterval(() => {
+    wmState.elapsed = Math.floor((Date.now() - wmState.startTime) / 1000);
+    wmTickDisplay();
+  }, 1000);
+}
+
+function wmTickDisplay() {
+  const el = document.getElementById('wm-sw-display');
+  if (!el || !wmState) return;
+  const s = wmState.elapsed;
+  const h = Math.floor(s / 3600);
+  const m = Math.floor((s % 3600) / 60);
+  const sec = s % 60;
+  el.textContent = h > 0
+    ? `${h}:${String(m).padStart(2,'0')}:${String(sec).padStart(2,'0')}`
+    : `${m}:${String(sec).padStart(2,'0')}`;
+}
+
+function wmFinish() {
+  if (!wmState) return;
+  clearInterval(wmState.swInterval);
+
+  const totalSets = wmState.exercises.reduce((s, e) => s + e.sets.length, 0);
+  const doneSets  = wmState.exercises.reduce((s, e) => s + wmCountDone(e.sets), 0);
+  const mins = Math.max(1, Math.round(wmState.elapsed / 60));
+
+  const overlay = document.getElementById('wm-overlay');
+  if (!overlay) return;
+
+  // Build finish sheet
+  const sheet = document.createElement('div');
+  sheet.className = 'wm-finish-sheet';
+  sheet.innerHTML = `
+    <div style="font-family:'Oswald',sans-serif;font-weight:700;font-size:1.1rem;letter-spacing:0.04em;text-transform:uppercase;margin-bottom:14px;">Finish Workout</div>
+    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:16px;">
+      <div style="text-align:center;background:var(--surface2);border-radius:8px;padding:10px;">
+        <div style="font-family:'Oswald',sans-serif;font-weight:700;font-size:1.4rem;color:var(--accent);">${doneSets}</div>
+        <div style="font-size:0.6rem;color:var(--muted);text-transform:uppercase;letter-spacing:0.07em;">Sets done</div>
+      </div>
+      <div style="text-align:center;background:var(--surface2);border-radius:8px;padding:10px;">
+        <div style="font-family:'Oswald',sans-serif;font-weight:700;font-size:1.4rem;color:var(--accent);">${mins}m</div>
+        <div style="font-size:0.6rem;color:var(--muted);text-transform:uppercase;letter-spacing:0.07em;">Duration</div>
+      </div>
+      <div style="text-align:center;background:var(--surface2);border-radius:8px;padding:10px;">
+        <div style="font-family:'Oswald',sans-serif;font-weight:700;font-size:1.4rem;color:var(--accent);">${Math.round(doneSets/totalSets*100)}%</div>
+        <div style="font-size:0.6rem;color:var(--muted);text-transform:uppercase;letter-spacing:0.07em;">Complete</div>
+      </div>
+    </div>
+    <div style="font-family:'Oswald',sans-serif;font-weight:600;font-size:0.7rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--muted);margin-bottom:8px;">How hard was this session?</div>
+    <div style="display:flex;gap:5px;flex-wrap:wrap;margin-bottom:16px;" id="wm-rpe-row">
+      ${[1,2,3,4,5,6,7,8,9,10].map(n=>`<button class="m-rpe-btn" data-rpe="${n}" onclick="wmSetRPE(${n})">${n}</button>`).join('')}
+    </div>
+    <div style="display:flex;gap:8px;">
+      <button onclick="wmSaveWorkout()" class="btn-primary" style="flex:2;padding:14px;">Save Workout</button>
+      <button onclick="wmCancelFinish(this)" class="btn-secondary" style="flex:1;padding:14px;">Back</button>
+    </div>`;
+  overlay.appendChild(sheet);
+}
+
+function wmSetRPE(n) {
+  if (!wmState) return;
+  wmState.rpe = n;
+  document.querySelectorAll('#wm-rpe-row .m-rpe-btn').forEach(b => {
+    const v = parseInt(b.dataset.rpe);
+    const active = v === n;
+    b.classList.toggle('active', active);
+    if (active) {
+      b.style.background = n<=4?'var(--green)':n<=7?'#ffb800':'var(--red)';
+      b.style.borderColor = b.style.background;
+      b.style.color = '#000';
+    } else {
+      b.style.background=''; b.style.borderColor=''; b.style.color='';
+    }
+  });
+}
+
+function wmCancelFinish(btn) {
+  btn.closest('.wm-finish-sheet').remove();
+  wmStartSw(); // resume stopwatch
+}
+
+function wmSaveWorkout() {
+  if (!wmState) return;
+  const bw = state.profile?.weight || 70;
+  const mins = Math.max(1, Math.round(wmState.elapsed / 60));
+  const exercises = [];
+  let totalVol = 0;
+
+  wmState.exercises.forEach(ex => {
+    const lastSet = ex.sets[ex.sets.length - 1];
+    const doneSets = wmCountDone(ex.sets) || ex.sets.length;
+    const tt = lastSet.trackType;
+    const reps = tt === 'time' ? 0 : (lastSet.reps || 0);
+    const time = tt === 'time' ? (lastSet.time || 0) : 0;
+    const weight = lastSet.weight || 0;
+
+    if (ex.unilateral) {
+      ['Left', 'Right'].forEach(side => {
+        exercises.push({ name: `${ex.name} (${side})`, sets: doneSets, reps, time, weight, trackType: tt, bilateral: true, side: side.toLowerCase() });
+      });
+      if (tt === 'reps') totalVol += doneSets * reps * weight * 2;
+    } else {
+      exercises.push({ name: ex.name, sets: doneSets, reps, time, weight, trackType: tt });
+      if (tt === 'reps') totalVol += doneSets * reps * weight;
+    }
+
+    // PR tracking
+    if (tt === 'reps' && weight > 0) {
+      if (!state.personalRecords[ex.name] || weight > state.personalRecords[ex.name].value) {
+        state.personalRecords[ex.name] = { value: weight, unit: 'kg' };
+        setTimeout(() => mToast(`🏆 New PR! ${ex.name}: ${weight}kg`, 'success'), 500);
+      }
+    }
+  });
+
+  const calories = calcCalories(exercises, bw, mins);
+  state.workouts.unshift({
+    id: Date.now(),
+    name: wmState.name,
+    date: new Date().toISOString(),
+    exercises,
+    totalVolume: totalVol,
+    totalSets: exercises.reduce((s, e) => s + e.sets, 0),
+    calories,
+    duration: mins,
+    bodyWeight: bw,
+    rpe: wmState.rpe || null,
+  });
+
+  persistSave();
+
+  // Auto-progression
+  const progressionExercises = exercises.map(e => ({
+    ...e,
+    name: e.name.replace(/ \(Left\)$/, '').replace(/ \(Right\)$/, '')
+  }));
+  mAutoProgress(progressionExercises);
+
+  // Clean up
+  clearInterval(wmState.swInterval);
+  document.getElementById('wm-overlay')?.remove();
+  wmState = null;
+
+  mRenderHome();
+  mRenderLog();
+  const cRange = calcCalorieRange(exercises, bw, mins);
+  mToast(`✓ Workout saved — ~${cRange.low}–${cRange.high} kcal`, 'success');
+}
 // Single tap = start/restart timer at current preset
 // Multiple taps within 500ms = cycle through 30s increments (30→60→90→...→180→30)
 const QT_PRESETS = [30, 60, 90, 120, 150, 180];

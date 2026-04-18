@@ -1,8 +1,8 @@
-// HomeBody Service Worker v4
+// HomeBody Service Worker v5
 // Network-first for HTML (always fresh), cache-first for assets.
 // When a new SW installs, it immediately takes over all clients.
 
-const CACHE = 'homebody-v4';
+const CACHE = 'homebody-v5';
 const ASSETS = ['manifest.json', 'icon-192.png', 'icon-512.png'];
 
 self.addEventListener('install', event => {
