@@ -6,15 +6,19 @@
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="HomeBody">
 <meta name="theme-color" content="#080c10">
+<link rel="apple-touch-icon" href="icon-192.png">
 <link rel="manifest" href="manifest.json">
 <title>HomeBody</title>
 <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
 <style>
 :root{--bg:#080c10;--surface:#0f1520;--surface2:#182030;--border:#1e2d40;--accent:#00e5c8;--accent2:#ff5c35;--text:#eef2f7;--muted:#6a8099;--red:#ff4060;--green:#00d68f;--blue:#4da6ff;--nav-h:64px;--safe-bottom:env(safe-area-inset-bottom,0px)}
-*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;-webkit-touch-callout:none;}
 html,body{height:100%;overflow:hidden}
-body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);overscroll-behavior:none}
+body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);overscroll-behavior:none;-webkit-text-size-adjust:100%;}
+/* Momentum scrolling for all scrollable areas */
+.page,.modal-body,.wm-body,.show-wkt-body,.show-workout-body{-webkit-overflow-scrolling:touch;}
 .bottom-nav{position:fixed;bottom:0;left:0;right:0;z-index:100;height:calc(var(--nav-h) + var(--safe-bottom));background:rgba(10,18,28,0.97);backdrop-filter:blur(16px);border-top:1px solid var(--border);display:flex;align-items:flex-start;padding-top:6px}
 .nav-tab{flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;padding:4px 2px;background:none;border:none;cursor:pointer;color:var(--muted);transition:color 0.2s}
 .nav-tab.active{color:var(--accent)}.nav-tab .tab-icon{font-size:1.35rem;line-height:1}
@@ -31,7 +35,7 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);overs
 .btn-primary:active{opacity:0.85;transform:scale(0.97)}
 .btn-secondary{font-family:'Oswald',sans-serif;font-weight:700;font-size:0.82rem;letter-spacing:0.08em;text-transform:uppercase;padding:11px 18px;border-radius:8px;background:var(--surface2);color:var(--text);border:1px solid var(--border);cursor:pointer}
 .btn-danger{font-family:'Oswald',sans-serif;font-weight:700;font-size:0.78rem;letter-spacing:0.08em;text-transform:uppercase;padding:10px 16px;border-radius:8px;background:rgba(255,64,96,0.12);color:var(--red);border:1px solid rgba(255,64,96,0.3);cursor:pointer}
-.form-input{width:100%;background:var(--bg);border:1px solid var(--border);color:var(--text);padding:13px 14px;border-radius:8px;font-family:'Inter',sans-serif;font-size:0.9rem;transition:border-color 0.2s;-webkit-appearance:none}
+.form-input{width:100%;background:var(--bg);border:1px solid var(--border);color:var(--text);padding:13px 14px;border-radius:8px;font-family:'Inter',sans-serif;font-size:1rem;transition:border-color 0.2s;-webkit-appearance:none}
 .form-input:focus{outline:none;border-color:var(--accent)}.form-input::placeholder{color:#2a3d55}
 .form-label{font-family:'Oswald',sans-serif;font-weight:600;font-size:0.7rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--muted);display:block;margin-bottom:6px}
 .form-group{display:flex;flex-direction:column;gap:6px}
@@ -59,7 +63,7 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);overs
 .ex-row-m .ex-name-m{width:100%;background:var(--bg);border:1px solid var(--border);color:var(--text);padding:11px 13px;border-radius:8px;font-family:'Inter',sans-serif;font-size:0.9rem;margin-bottom:8px;-webkit-appearance:none}
 .ex-row-m .ex-name-m:focus{outline:none;border-color:var(--accent)}.ex-row-m .ex-name-m::placeholder{color:#2a3d55}
 .ex-row-grid{display:grid;grid-template-columns:1fr 1fr 1fr auto;gap:6px;align-items:center}
-.mini-input{background:var(--bg);border:1px solid var(--border);color:var(--text);padding:9px 8px;border-radius:7px;font-family:'Inter',sans-serif;font-size:0.85rem;text-align:center;width:100%;-webkit-appearance:none}
+.mini-input{background:var(--bg);border:1px solid var(--border);color:var(--text);padding:9px 8px;border-radius:7px;font-family:'Inter',sans-serif;font-size:1rem;text-align:center;width:100%;-webkit-appearance:none}
 .mini-input:focus{outline:none;border-color:var(--accent)}.mini-input::placeholder{color:#2a3d55}
 .mini-label{font-size:0.58rem;color:var(--muted);text-align:center;font-family:'Oswald',sans-serif;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;margin-bottom:3px}
 .type-pill{display:flex;border-radius:6px;overflow:hidden;border:1px solid var(--border);background:var(--bg);width:100%}
@@ -124,7 +128,7 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);overs
 /* EXERCISES */
 #page-exercises{padding-bottom:12px}
 .ex-search-bar{padding:12px 14px;position:sticky;top:68px;z-index:40;background:var(--bg)}
-.ex-search-input{width:100%;background:var(--surface);border:1px solid var(--border);color:var(--text);padding:13px 16px;border-radius:10px;font-family:'Inter',sans-serif;font-size:0.9rem;-webkit-appearance:none}
+.ex-search-input{width:100%;background:var(--surface);border:1px solid var(--border);color:var(--text);padding:13px 16px;border-radius:10px;font-family:'Inter',sans-serif;font-size:1rem;-webkit-appearance:none}
 .ex-search-input:focus{outline:none;border-color:var(--accent)}.ex-search-input::placeholder{color:var(--muted)}
 .ex-filter-chips{padding:0 14px 10px;display:flex;gap:7px;overflow-x:auto;-webkit-overflow-scrolling:touch}
 .ex-filter-chips::-webkit-scrollbar{display:none}
@@ -267,7 +271,7 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);overs
 .wm-set{display:grid;grid-template-columns:24px 1fr 1fr 1fr auto;gap:6px;align-items:center;padding:8px 10px;background:var(--surface2);border-radius:8px;border:1px solid var(--border);transition:all 0.15s;}
 .wm-set.done{background:rgba(0,214,143,0.08);border-color:rgba(0,214,143,0.3);}
 .wm-set-num{font-family:'Oswald',sans-serif;font-weight:700;font-size:0.75rem;color:var(--muted);text-align:center;}
-.wm-set-input{background:var(--bg);border:1px solid var(--border);color:var(--text);padding:7px 6px;border-radius:6px;font-family:'Inter',sans-serif;font-size:0.85rem;text-align:center;width:100%;-webkit-appearance:none;}
+.wm-set-input{background:var(--bg);border:1px solid var(--border);color:var(--text);padding:7px 6px;border-radius:6px;font-family:'Inter',sans-serif;font-size:1rem;text-align:center;width:100%;-webkit-appearance:none;}
 .wm-set-input:focus{outline:none;border-color:var(--accent);}
 .wm-set-lbl{font-size:0.56rem;color:var(--muted);text-align:center;font-family:'Oswald',sans-serif;font-weight:600;letter-spacing:0.07em;text-transform:uppercase;margin-bottom:2px;}
 .wm-tick{width:34px;height:34px;border-radius:8px;border:2px solid var(--border);background:none;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:1rem;transition:all 0.15s;flex-shrink:0;}
@@ -4608,11 +4612,11 @@ function wmRender() {
 
   overlay.innerHTML = `
     <div class="wm-header">
-      <div>
+      <div style="flex:1;min-width:0;overflow:hidden;">
         <div class="wm-title">${escHtml(wmState.dayName)}</div>
         <div style="font-size:0.62rem;color:var(--muted);margin-top:1px;">${doneSets}/${totalSets} sets</div>
       </div>
-      <button onclick="wmToggleSw()" style="background:none;border:none;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:1px;padding:4px 6px;">
+      <button onclick="wmToggleSw()" style="flex-shrink:0;background:none;border:none;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:1px;padding:4px 6px;">
         <div class="wm-sw inactive" id="wm-sw-display">0:00</div>
         <div style="font-size:0.52rem;color:var(--muted);font-family:'Oswald',sans-serif;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;" id="wm-sw-label">Tap to start</div>
       </button>
@@ -5097,6 +5101,22 @@ function mUpdateQtLabel() {
 persistLoad();
 mRenderHome();
 wmRestoreIfActive();
+
+// iOS Safari requires a user gesture to unlock Web Audio
+// Unlock on first touch so timer beeps work immediately
+(function() {
+  function unlockAudio() {
+    if (window._audioUnlocked) return;
+    const ctx = window.mTimerAudioCtx || new (window.AudioContext || window.webkitAudioContext)();
+    if (ctx.state === 'suspended') ctx.resume();
+    window.mTimerAudioCtx = ctx;
+    window._audioUnlocked = true;
+    document.removeEventListener('touchstart', unlockAudio);
+    document.removeEventListener('touchend', unlockAudio);
+  }
+  document.addEventListener('touchstart', unlockAudio, { passive: true });
+  document.addEventListener('touchend', unlockAudio, { passive: true });
+})();
 
 // ─── FIRST RUN GUIDE ───
 if (!localStorage.getItem('hb_seen_guide')) {
