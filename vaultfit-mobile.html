@@ -4494,42 +4494,70 @@ function mGetTimerCtx() {
   }
   return mTimerAudioCtx;
 }
-function mPlayBeep(freq = 880, duration = 0.15, vol = 0.4) {
+async function mPlayBeep(freq = 880, duration = 0.15, vol = 0.4) {
   try {
     const ctx = mGetTimerCtx();
-    if (ctx.state === 'suspended') ctx.resume();
+    if (ctx.state === 'suspended') await ctx.resume();
+    if (ctx.state !== 'running') return;
+    const now = ctx.currentTime;
     const osc = ctx.createOscillator();
     const gain = ctx.createGain();
     osc.type = 'sine';
     osc.frequency.value = freq;
-    gain.gain.setValueAtTime(vol, ctx.currentTime);
-    gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + duration);
+    gain.gain.setValueAtTime(vol, now);
+    gain.gain.exponentialRampToValueAtTime(0.001, now + duration);
     osc.connect(gain);
     gain.connect(ctx.destination);
-    osc.start(ctx.currentTime);
-    osc.stop(ctx.currentTime + duration + 0.05);
+    osc.start(now);
+    osc.stop(now + duration + 0.05);
   } catch(e) {}
 }
 
-function mPlayTimerDone() {
-  // 3-second alert: three ascending bursts with vibration
-  const pattern = [
-    [880, 0.18, 0.5,    0],
-    [660, 0.18, 0.45, 250],
-    [880, 0.18, 0.5,  500],
-    [660, 0.18, 0.45, 750],
-    [880, 0.18, 0.5, 1000],
-    [1100,0.25, 0.55,1250],
-    [880, 0.18, 0.5, 1600],
-    [660, 0.18, 0.45,1850],
-    [880, 0.18, 0.5, 2100],
-    [1100,0.35, 0.6, 2400],
-  ];
-  pattern.forEach(([freq, dur, vol, delay]) => {
-    setTimeout(() => mPlayBeep(freq, dur, vol), delay);
-  });
-  // Vibrate pattern if supported
-  if (navigator.vibrate) navigator.vibrate([200,100,200,100,200,150,300,100,300,150,400]);
+async function mPlayTimerDone() {
+  try {
+    const ctx = mGetTimerCtx();
+    if (ctx.state === 'suspended') await ctx.resume();
+    if (ctx.state !== 'running') {
+      // Fallback: vibrate only
+      if (navigator.vibrate) navigator.vibrate([300,100,300,100,300,150,500]);
+      return;
+    }
+
+    // Schedule all beeps on the audio timeline in one go — no setTimeout
+    // iOS can't suspend mid-schedule once the nodes are queued
+    const now = ctx.currentTime;
+    const pattern = [
+      [880,  0.18, 0.5,  0.00],
+      [660,  0.18, 0.45, 0.25],
+      [880,  0.18, 0.5,  0.50],
+      [660,  0.18, 0.45, 0.75],
+      [880,  0.18, 0.5,  1.00],
+      [1100, 0.25, 0.55, 1.25],
+      [880,  0.18, 0.5,  1.60],
+      [660,  0.18, 0.45, 1.85],
+      [880,  0.18, 0.5,  2.10],
+      [1100, 0.35, 0.6,  2.40],
+    ];
+
+    pattern.forEach(([freq, dur, vol, offset]) => {
+      const t = now + offset;
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+      osc.type = 'sine';
+      osc.frequency.value = freq;
+      gain.gain.setValueAtTime(0.001, t);
+      gain.gain.linearRampToValueAtTime(vol, t + 0.02);
+      gain.gain.exponentialRampToValueAtTime(0.001, t + dur);
+      osc.connect(gain);
+      gain.connect(ctx.destination);
+      osc.start(t);
+      osc.stop(t + dur + 0.05);
+    });
+
+    if (navigator.vibrate) navigator.vibrate([200,100,200,100,200,150,300,100,300,150,400]);
+  } catch(e) {
+    if (navigator.vibrate) navigator.vibrate([300,100,300,100,500]);
+  }
 }
 
 // ─── FAB TRAY ───
@@ -5161,6 +5189,15 @@ wmRestoreIfActive();
   }
   document.addEventListener('touchstart', unlockAudio, { passive: true });
   document.addEventListener('touchend', unlockAudio, { passive: true });
+
+  // Re-resume audio context whenever app comes back to foreground
+  document.addEventListener('visibilitychange', () => {
+    if (document.visibilityState === 'visible' && window.mTimerAudioCtx) {
+      if (window.mTimerAudioCtx.state === 'suspended') {
+        window.mTimerAudioCtx.resume().catch(() => {});
+      }
+    }
+  });
 })();
 
 // ─── FIRST RUN GUIDE ───
