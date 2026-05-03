@@ -444,7 +444,8 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);overs
           <div class="label-caps-accent" style="margin-bottom:10px;">Today's Session</div>
           <div style="font-family:'Oswald',sans-serif;font-weight:700;font-size:var(--fs-xl);letter-spacing:0.02em;text-transform:uppercase;color:var(--text);margin-bottom:4px;line-height:1.15;" id="m-today-name">–</div>
           <div style="font-size:var(--fs-sm);color:var(--muted);margin-bottom:18px;line-height:1.5;" id="m-today-meta">–</div>
-          <button onclick="mLoadTodayPlan()" class="btn-primary" style="width:100%;padding:16px;font-size:0.92rem;letter-spacing:0.08em;border-radius:12px;">
+          <div id="m-today-done" style="display:none;"></div>
+          <button id="m-today-btn" onclick="mLoadTodayPlan()" class="btn-primary" style="width:100%;padding:16px;font-size:0.92rem;letter-spacing:0.08em;border-radius:12px;">
             ▶&nbsp;&nbsp;Start Today's Workout
           </button>
         </div>
@@ -1905,13 +1906,46 @@ function mRenderTodayAction() {
   }
 
   if (noPlanEl) noPlanEl.style.display = 'none';
+
+  // Check if already trained today
+  const todayStart = new Date(); todayStart.setHours(0,0,0,0);
+  const doneToday = state.workouts.find(w => {
+    const d = new Date(w.date); d.setHours(0,0,0,0);
+    return d.getTime() === todayStart.getTime();
+  });
+
   const exCount = (todayDay.exercises||[]).length;
   const setCount = (todayDay.exercises||[]).reduce((s,e)=>s+(e.sets||0),0);
   document.getElementById('m-today-name').textContent = todayDay.name;
-  document.getElementById('m-today-meta').textContent = `${exCount} exercises · ${setCount} sets · ${todayPlan.name}`;
   actionEl.style.display = 'block';
   actionEl._day = todayDay;
   actionEl._planName = todayPlan.name;
+
+  const metaEl = document.getElementById('m-today-meta');
+  const btnEl  = document.getElementById('m-today-btn');
+  const doneEl = document.getElementById('m-today-done');
+
+  if (doneToday) {
+    const dur = doneToday.duration ? Math.round(doneToday.duration/60) + 'min' : null;
+    const sets = doneToday.exercises ? doneToday.exercises.reduce((s,e)=>s+(e.sets?.length||e.sets||0),0) : null;
+    metaEl.textContent = todayPlan.name;
+    if (btnEl)  btnEl.style.display  = 'none';
+    if (doneEl) {
+      doneEl.style.display = 'block';
+      doneEl.innerHTML = '<div style="display:flex;align-items:center;gap:10px;background:rgba(90,158,110,0.12);border:1.5px solid rgba(90,158,110,0.35);border-radius:12px;padding:14px 16px;">'
+        + '<div style="font-size:1.6rem;line-height:1;">✓</div>'
+        + '<div style="flex:1;">'
+        + '<div style="font-family:Oswald,sans-serif;font-weight:700;font-size:0.9rem;color:#88CCA0;letter-spacing:0.04em;">Session complete</div>'
+        + '<div style="font-size:0.75rem;color:var(--muted);margin-top:1px;">' + ([dur, sets ? sets + ' sets' : null].filter(Boolean).join(' · ') || 'Logged today') + '</div>'
+        + '</div>'
+        + '<button onclick="mLoadTodayPlan()" style="background:none;border:1px solid rgba(90,158,110,0.4);border-radius:8px;color:#88CCA0;font-size:0.72rem;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;padding:7px 10px;cursor:pointer;white-space:nowrap;">Again</button>'
+        + '</div>';
+    }
+  } else {
+    metaEl.textContent = exCount + ' exercises · ' + setCount + ' sets · ' + todayPlan.name;
+    if (btnEl)  btnEl.style.display  = 'block';
+    if (doneEl) doneEl.style.display = 'none';
+  }
 }
 
 function mLoadTodayPlan() {
