@@ -1995,7 +1995,7 @@ function mRenderProgressLog() {
         </div>
       </div>
       <div class="log-entry-exs">${exRows}</div>
-      <div class="log-mini"><span>${w.exercises?.length||0} exercises</span><span class="orange">~${Math.round((w.calories||0)*0.75/5)*5}–${Math.round((w.calories||0)*1.3/5)*5} kcal</span>${w.rpe?`<span>RPE ${w.rpe}</span>`:''}</div>
+      <div class="log-mini"><span>${w.exercises?.length||0} exercises</span><span class="orange">~${w.calories||0} kcal</span>${w.rpe?`<span>RPE ${w.rpe}</span>`:''}</div>
     </div>`;
   }).join('');
 }
@@ -3668,7 +3668,7 @@ function mRenderLog() {
       </div>
       <div class="log-entry-stats">
         <div class="log-mini"><span>${w.totalSets}</span> sets</div>
-        <div class="log-mini"><span class="orange">~${Math.round((w.calories||0)*0.75/5)*5}–${Math.round((w.calories||0)*1.3/5)*5}</span> kcal</div>
+        <div class="log-mini"><span class="orange">~${w.calories||0}</span> kcal</div>
         ${w.duration?`<div class="log-mini"><span>${w.duration}</span> min</div>`:''}
         ${w.totalVolume>0?`<div class="log-mini"><span>${w.totalVolume>999?(w.totalVolume/1000).toFixed(1)+'k':w.totalVolume}</span> kg vol</div>`:''}
       </div>
@@ -5318,7 +5318,8 @@ function gradeWorkout(workout) {
   // training approach and is graded on its own terms — not penalised for low variety.
   const setsPerMuscle={};
   ex.forEach(e=>{
-    const found=EXERCISES.find(x=>x.name===e.name);
+    const foundName=e.name.replace(/ \(Left\)$| \(Right\)$/, '');
+    const found=EXERCISES.find(x=>x.name===foundName);
     if(!found)return;
     const m=found.muscle;
     const grp=(m==='Biceps'||m==='Triceps')?'Arms':(m==='Rear Delts'?'Shoulders':m);
@@ -5350,7 +5351,8 @@ function gradeWorkout(workout) {
     // Count distinct exercises in the dominant muscle group — variety within specialisation
     const dominantMuscle = Object.entries(setsPerMuscle).sort((a,b)=>b[1]-a[1])[0]?.[0];
     const distinctEx = new Set(ex.filter(e=>{
-      const f=EXERCISES.find(x=>x.name===e.name);
+      const fName=e.name.replace(/ \(Left\)$| \(Right\)$/, '');
+      const f=EXERCISES.find(x=>x.name===fName);
       if(!f)return false;
       const g=(f.muscle==='Biceps'||f.muscle==='Triceps')?'Arms':(f.muscle==='Rear Delts'?'Shoulders':f.muscle);
       return g===dominantMuscle;
