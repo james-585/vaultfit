@@ -2217,7 +2217,8 @@ function mRenderMuscleRecovery() {
     .forEach(w => {
       const ts = new Date(w.date).getTime();
       w.exercises.forEach(e => {
-        const ex = EXERCISES.find(x => x.name === e.name);
+        const exName = e.name.replace(/ \(Left\)$| \(Right\)$/, '');
+        const ex = EXERCISES.find(x => x.name === exName);
         if (!ex) return;
         const key = ex.muscle;
         if (!MUSCLES.includes(key)) return;
@@ -3756,7 +3757,8 @@ function mRenderWeeklyVolumeChart() {
     .filter(w => now - new Date(w.date).getTime() < sevenDays)
     .forEach(w => {
       w.exercises.forEach(e => {
-        const found = EXERCISES.find(x => x.name === e.name);
+        const foundName = e.name.replace(/ \(Left\)$| \(Right\)$/, '');
+        const found = EXERCISES.find(x => x.name === foundName);
         if (!found) return;
         const m = found.muscle;
         const grp = (m==='Biceps'||m==='Triceps') ? 'Arms' : (m==='Rear Delts' ? 'Shoulders' : m);
