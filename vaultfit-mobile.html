@@ -636,7 +636,17 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);overs
           <button class="btn-primary" style="width:100%;margin-top:4px;" onclick="mSaveProfile()">Save Profile</button>
         </div>
       </div>
-      <!-- Equipment -->
+      <!-- Personal Records -->
+      <div class="card" style="margin-top:12px;">
+        <div class="card-title">Personal Records 🏆</div>
+        <div id="m-prs"><div class="empty-state" style="padding:16px 0;"><p>Log workouts to set PRs</p></div></div>
+      </div>
+      <div class="card" style="margin-top:12px;">
+        <div class="card-title">🏋️ My Equipment</div>
+        <p style="font-size:0.75rem;color:var(--muted);line-height:1.5;margin-bottom:12px;">Your equipment is used to filter exercises and generate personalised plans.</p>
+        <div id="m-equip-manager"></div>
+      </div>
+      <!-- Appearance -->
       <div class="card" style="margin-top:12px;">
         <div style="display:flex;justify-content:space-between;align-items:center;">
           <div class="card-title" style="margin-bottom:0;">Appearance</div>
@@ -645,16 +655,6 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);overs
             🌙 Dark
           </button>
         </div>
-      </div>
-      <div class="card" style="margin-top:12px;">
-        <div class="card-title">🏋️ My Equipment</div>
-        <p style="font-size:0.75rem;color:var(--muted);line-height:1.5;margin-bottom:12px;">Your equipment is used to filter exercises and generate personalised plans.</p>
-        <div id="m-equip-manager"></div>
-      </div>
-      <!-- Personal Records -->
-      <div class="card" style="margin-top:10px;">
-        <div class="card-title">Personal Records 🏆</div>
-        <div id="m-prs"><div class="empty-state" style="padding:16px 0;"><p>Log workouts to set PRs</p></div></div>
       </div>
       <!-- Export / Import -->
       <div class="card" style="margin-top:10px;">
@@ -980,7 +980,7 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);overs
 </div>
 
 <!-- HOW-TO MODAL -->
-<div class="modal-overlay" id="m-howto-modal" onclick="mCloseModal('m-howto-modal',event)">
+<div class="modal-overlay" id="m-howto-modal" style="z-index:9300;" onclick="mCloseModal('m-howto-modal',event)">
   <div class="modal-sheet"><div class="modal-handle"></div>
     <div class="modal-hdr"><div class="modal-title" id="mht-name">Exercise</div><button class="modal-close" onclick="mCloseModal('m-howto-modal')">✕</button></div>
     <div class="modal-body" id="mht-body"></div>
@@ -4544,6 +4544,7 @@ function mRenderProfile(){
   mRenderFavouritesList();
   mRenderBodyMetricsChart();
   mRenderEquipManager();
+  mRenderPRs();
 }
 function mSaveProfile(){
   const p={name:document.getElementById('m-pf-name').value.trim(),age:parseInt(document.getElementById('m-pf-age').value)||null,sex:document.getElementById('m-pf-sex').value,weight:parseFloat(document.getElementById('m-pf-weight').value)||null,goal:document.getElementById('m-pf-goal').value,activity:document.getElementById('m-pf-activity').value,equipment:state.profile?.equipment||{}};
@@ -6970,6 +6971,7 @@ function wmSaveWorkout() {
   wmState = null;
   wmPersist(); // clears localStorage
 
+  mCheckNewMilestones();
   mRenderHome();
   mRenderLog();
   const cRange = calcCalorieRange(exercises, bw, mins);
