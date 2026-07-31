@@ -231,7 +231,10 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);overs
 .day-acc-title{font-family:'Oswald',sans-serif;font-weight:700;font-size:0.85rem;letter-spacing:0.04em;text-transform:uppercase}
 .day-acc-body{display:none;padding:8px 14px 12px}.day-acc-body.open{display:block}
 .day-ex-item{display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid rgba(30,45,64,0.5);font-size:0.8rem}
+.day-ex-item.superset-linked{padding-left:8px;border-left:2px solid var(--accent);border-bottom:1px dashed rgba(30,45,64,0.35);}
 .day-ex-item:last-child{border-bottom:none}.day-ex-detail{font-size:0.7rem;color:var(--muted)}
+.day-ex-superset-divider{font-family:'Oswald',sans-serif;font-weight:700;font-size:0.62rem;letter-spacing:0.08em;text-transform:uppercase;color:var(--accent);padding:8px 0 2px;}
+.day-ex-superset-badge{display:inline-block;margin-right:6px;font-family:'Oswald',sans-serif;font-weight:700;font-size:0.6rem;color:var(--accent);background:rgba(232,77,42,0.1);border:1px solid rgba(232,77,42,0.3);border-radius:5px;padding:1px 5px;}
 .edit-ex-row{background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:10px 12px;margin-bottom:6px}
 .edit-ex-row .ex-name-m{width:100%;background:var(--bg);border:1px solid var(--border);color:var(--text);padding:9px 12px;border-radius:7px;font-family:'Inter',sans-serif;font-size:0.85rem;margin-bottom:7px;-webkit-appearance:none}
 .edit-ex-row .ex-name-m:focus{outline:none;border-color:var(--accent)}
@@ -275,6 +278,9 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);overs
 .wm-body{flex:1;overflow-y:auto;padding:10px 14px 220px;-webkit-overflow-scrolling:touch;}
 .wm-ex{background:var(--surface);border:1px solid var(--border);border-radius:12px;margin-bottom:12px;overflow:hidden;}
 .wm-ex.completed{border-color:rgba(90,158,110,0.3);background:rgba(90,158,110,0.04);}
+.wm-ex.superset-linked{border-left:3px solid var(--accent);}
+.wm-superset-divider{font-family:'Oswald',sans-serif;font-weight:700;font-size:0.68rem;letter-spacing:0.08em;text-transform:uppercase;color:var(--accent);padding:2px 2px 6px;}
+.wm-superset-badge{display:inline-block;margin-left:6px;font-family:'Oswald',sans-serif;font-weight:700;font-size:0.62rem;letter-spacing:0.04em;color:var(--accent);background:rgba(232,77,42,0.1);border:1px solid rgba(232,77,42,0.3);border-radius:5px;padding:1px 6px;vertical-align:middle;}
 .wm-ex-hdr{padding:12px 14px 8px;display:flex;justify-content:space-between;align-items:flex-start;gap:8px;}
 .wm-ex-name{font-family:'Oswald',sans-serif;font-weight:700;font-size:1rem;letter-spacing:0.03em;text-transform:uppercase;flex:1;}
 .wm-ex-meta{font-size:0.68rem;color:var(--muted);margin-top:2px;}
@@ -4429,6 +4435,32 @@ function mRenderMyPlans() {
   }).join('');
 }
 function mDeletePlan(id){mConfirm('Delete Plan','This plan will be permanently deleted.','Delete',()=>{state.userPlans=state.userPlans.filter(p=>p.id!==id);persistSave();mRenderMyPlans();mToast('Plan deleted','');});}
+// Renders a plan day's exercise list, bracketing/labeling exercises that share
+// a supersetGroup instead of listing them as unrelated rows.
+function mRenderPlanDayExerciseList(exercises) {
+  // Determine group membership + order (position within group = array order)
+  const groupCounts = {};
+  exercises.forEach(e => { if (e.supersetGroup) groupCounts[e.supersetGroup] = (groupCounts[e.supersetGroup]||0)+1; });
+  const groupSeenPos = {};
+  const seenDividers = new Set();
+
+  return exercises.map(e => {
+    const detail = `${e.sets}×${e.trackType==='time'?(e.time||0)+'s':(e.reps||0)+' reps'}${e.weight>0?` @${e.weight}kg`:''}`;
+    const inGroup = e.supersetGroup && groupCounts[e.supersetGroup] > 1;
+    let divider = '';
+    let badge = '';
+    if (inGroup) {
+      if (!seenDividers.has(e.supersetGroup)) {
+        seenDividers.add(e.supersetGroup);
+        divider = `<div class="day-ex-superset-divider">⚡ Superset ${escHtml(e.supersetGroup)}</div>`;
+      }
+      groupSeenPos[e.supersetGroup] = (groupSeenPos[e.supersetGroup]||0) + 1;
+      badge = `<span class="day-ex-superset-badge">${escHtml(e.supersetGroup)}${groupSeenPos[e.supersetGroup]}</span>`;
+    }
+    return `${divider}<div class="day-ex-item${inGroup?' superset-linked':''}"><span>${badge}${escHtml(e.name)}</span><span class="day-ex-detail">${detail}</span></div>`;
+  }).join('');
+}
+
 function mOpenPlanDetail(plan) {
   const dl=plan.planDays||(Array.isArray(plan.days)?plan.days:[]);
   const allEx=dl.flatMap(d=>d.exercises||[]);
@@ -4454,7 +4486,7 @@ function mOpenPlanDetail(plan) {
       </div>
       ${d.note?`<div style="padding:4px 14px 6px;font-size:0.72rem;color:var(--muted);font-style:italic;">${escHtml(d.note)}</div>`:''}
       <div class="day-acc-body${i===0?' open':''}">
-        ${(d.exercises||[]).map(e=>`<div class="day-ex-item"><span>${escHtml(e.name)}</span><span class="day-ex-detail">${e.sets}×${e.trackType==='time'?(e.time||0)+'s':(e.reps||0)+' reps'}${e.weight>0?` @${e.weight}kg`:''}</span></div>`).join('')}
+        ${mRenderPlanDayExerciseList(d.exercises||[])}
         <button onclick="window._mPdmLoad(${i})" style="margin-top:8px;width:100%;font-family:'Oswald',sans-serif;font-weight:700;font-size:0.72rem;letter-spacing:0.08em;text-transform:uppercase;padding:10px;border-radius:6px;background:var(--accent);color:#000;border:none;cursor:pointer;">▶ Load ${escHtml(d.name)}</button>
       </div>
     </div>`).join('');
@@ -6290,6 +6322,7 @@ function mStartWorkoutMode(day, planName) {
       name: baseName,
       trackType: e.trackType || 'reps',
       unilateral: isUnilateral,
+      supersetGroup: e.supersetGroup || null,
       sets: Array.from({ length: e.sets || 1 }, () => ({
         reps: e.trackType === 'time' ? 0 : (e.reps || 0),
         time: e.trackType === 'time' ? (e.time || 0) : 0,
@@ -6300,6 +6333,19 @@ function mStartWorkoutMode(day, planName) {
         doneR: isUnilateral ? false : undefined,
       }))
     };
+  });
+
+  // Validate superset groups: flag set-count mismatches, never block the workout.
+  // Pairing logic below always falls back gracefully to the shorter count.
+  const supersetSetCounts = {};
+  exercises.forEach(ex => {
+    if (!ex.supersetGroup) return;
+    (supersetSetCounts[ex.supersetGroup] = supersetSetCounts[ex.supersetGroup] || []).push(ex.sets.length);
+  });
+  Object.entries(supersetSetCounts).forEach(([group, counts]) => {
+    if (counts.length > 1 && new Set(counts).size > 1) {
+      mToast(`⚠ Superset ${group}: set counts don't match (${counts.join(' vs ')}) — pairing uses the shorter count`, '');
+    }
   });
 
   wmState = {
@@ -6361,7 +6407,7 @@ function wmRender() {
       <div class="wm-progress"><div class="wm-progress-fill" id="wm-progress-fill" style="width:${pct}%"></div></div>
     </div>
     <div class="wm-body" id="wm-body">
-      ${wmState.exercises.map((ex, ei) => wmRenderExercise(ex, ei)).join('')}
+      ${wmRenderExerciseList()}
       <div style="padding:8px 0 4px;text-align:center;">
         <button onclick="wmAddExercise()" style="background:none;border:1px dashed var(--border);color:var(--muted);border-radius:10px;padding:12px;width:100%;font-size:0.78rem;font-family:'Inter',sans-serif;cursor:pointer;">+ Add Exercise</button>
       </div>
@@ -6372,6 +6418,20 @@ function wmRender() {
   // Update stopwatch display and highlight first set
   wmTickDisplay();
   setTimeout(() => wmHighlightNextSet(), 50);
+}
+
+function wmRenderExerciseList() {
+  const seenGroups = new Set();
+  return wmState.exercises.map((ex, ei) => {
+    let divider = '';
+    const memberIdx = ex.supersetGroup ? wmGetSupersetGroupIndices(ex.supersetGroup) : [];
+    if (ex.supersetGroup && memberIdx.length > 1 && !seenGroups.has(ex.supersetGroup)) {
+      seenGroups.add(ex.supersetGroup);
+      const names = memberIdx.map(i => wmState.exercises[i].name).join(' + ');
+      divider = `<div class="wm-superset-divider">⚡ SUPERSET ${escHtml(ex.supersetGroup)} <span style="font-weight:400;text-transform:none;color:var(--muted);">— ${escHtml(names)}</span></div>`;
+    }
+    return divider + wmRenderExercise(ex, ei);
+  }).join('');
 }
 
 function wmRenderExercise(ex, ei) {
@@ -6425,10 +6485,16 @@ function wmRenderExercise(ex, ei) {
     }
   }).join('');
 
-  return `<div class="wm-ex${allDone ? ' completed' : ''}" id="wm-ex-${ei}">
+  const groupIdx = ex.supersetGroup ? wmGetSupersetGroupIndices(ex.supersetGroup) : [];
+  const inSuperset = groupIdx.length > 1;
+  const supersetPos = inSuperset ? groupIdx.indexOf(ei) + 1 : 0;
+  const supersetBadge = inSuperset
+    ? `<span class="wm-superset-badge">${escHtml(ex.supersetGroup)}${supersetPos}</span>` : '';
+
+  return `<div class="wm-ex${allDone ? ' completed' : ''}${inSuperset ? ' superset-linked' : ''}" id="wm-ex-${ei}">
     <div class="wm-ex-hdr">
       <div style="flex:1;min-width:0;">
-        <div class="wm-ex-name">${escHtml(ex.name)}</div>
+        <div class="wm-ex-name">${escHtml(ex.name)}${supersetBadge}</div>
         <div class="wm-ex-meta">${ex.sets.length} sets${ex.unilateral ? ' · L &amp; R' : ''}</div>
         <div style="display:flex;align-items:center;gap:6px;margin-top:5px;">
           <span style="font-size:0.65rem;color:var(--muted);">Rest:</span>
@@ -6448,6 +6514,57 @@ function wmRenderExercise(ex, ei) {
     <div class="wm-sets">${setsHtml}</div>
   </div>`;
 }
+// ─── SUPERSETS ───
+// A short transition gap used between paired exercises within a superset round,
+// instead of the full between-set rest. Full rest only fires once every group
+// member has completed the matching round.
+const SUPERSET_TRANSITION_SECS = 15;
+
+// All exercise indices (in array/plan order) sharing the given non-null group key.
+function wmGetSupersetGroupIndices(group) {
+  if (!wmState || !group) return [];
+  const out = [];
+  wmState.exercises.forEach((ex, i) => { if (ex.supersetGroup === group) out.push(i); });
+  return out;
+}
+
+// Other exercise indices paired with ei (excludes ei itself). Empty = standalone.
+function wmGetSupersetPartners(ei) {
+  if (!wmState) return [];
+  const ex = wmState.exercises[ei];
+  if (!ex || !ex.supersetGroup) return [];
+  return wmGetSupersetGroupIndices(ex.supersetGroup).filter(i => i !== ei);
+}
+
+// Decide whether a just-completed set should trigger the full rest timer or a
+// short superset transition, and start it. Called after any set is marked done.
+function wmHandleSetCompletion(ei, si) {
+  if (!wmState) return;
+  const ex = wmState.exercises[ei];
+  const partners = wmGetSupersetPartners(ei);
+
+  if (!partners.length) {
+    // Standalone exercise — unchanged behavior.
+    mQtStartTimer(ex.restSecs);
+    return;
+  }
+
+  // A round counts as complete once every group member has finished set index si
+  // (or doesn't have a set at that index — gracefully handles mismatched set counts).
+  const groupIdx = [ei, ...partners].sort((a, b) => a - b);
+  const roundComplete = groupIdx.every(idx => {
+    const s = wmState.exercises[idx].sets[si];
+    return !s || wmSetDone(s);
+  });
+
+  if (roundComplete) {
+    const restSecs = Math.max(...groupIdx.map(idx => wmState.exercises[idx].restSecs || 90));
+    mQtStartTimer(restSecs);
+  } else {
+    mQtStartTimer(SUPERSET_TRANSITION_SECS);
+  }
+}
+
 function wmTickSet(ei, si) {
   if (!wmState) return;
   const set = wmState.exercises[ei].sets[si];
@@ -6455,7 +6572,7 @@ function wmTickSet(ei, si) {
   wmUpdateSetUI(ei, si);
   wmPersist();
   if (wmSetDone(set) && navigator.vibrate) navigator.vibrate(40);
-  if (wmSetDone(set)) mQtStartTimer(wmState.exercises[ei].restSecs);
+  if (wmSetDone(set)) wmHandleSetCompletion(ei, si);
 }
 
 function wmTickSide(ei, si, side) {
@@ -6474,7 +6591,7 @@ function wmTickSide(ei, si, side) {
   wmUpdateSetUI(ei, si);
   wmPersist();
   if (navigator.vibrate) navigator.vibrate(40);
-  if (wmSetDone(set)) mQtStartTimer(wmState.exercises[ei].restSecs);
+  if (wmSetDone(set)) wmHandleSetCompletion(ei, si);
 }
 
 function wmUpdateSetUI(ei, si) {
@@ -6526,9 +6643,35 @@ function wmHighlightNextSet() {
   if (!wmState) return;
   // Remove all existing next-up highlights
   document.querySelectorAll('.wm-set.next-up').forEach(el => el.classList.remove('next-up'));
-  // Find the first undone set across all exercises
+  const resolvedGroups = new Set();
+  // Find the first undone set across all exercises. Superset groups alternate
+  // between members round-by-round (A1 set1 -> A2 set1 -> A1 set2 -> ...)
+  // rather than finishing one exercise before starting the next.
   for (let ei = 0; ei < wmState.exercises.length; ei++) {
     const ex = wmState.exercises[ei];
+    const group = ex.supersetGroup;
+
+    if (group) {
+      if (resolvedGroups.has(group)) continue; // already handled while scanning an earlier member
+      const memberIdx = wmGetSupersetGroupIndices(group);
+      if (memberIdx.length > 1) {
+        resolvedGroups.add(group);
+        const maxRounds = Math.max(...memberIdx.map(idx => wmState.exercises[idx].sets.length));
+        for (let si = 0; si < maxRounds; si++) {
+          for (const idx of memberIdx) {
+            const s = wmState.exercises[idx].sets[si];
+            if (s && !wmSetDone(s)) {
+              const el = document.getElementById(`wm-set-${idx}-${si}`);
+              if (el) el.classList.add('next-up');
+              return;
+            }
+          }
+        }
+        continue; // whole group done — keep scanning for the next exercise/group
+      }
+    }
+
+    // Standalone exercise (or a solo-tagged group with no partner in this day)
     for (let si = 0; si < ex.sets.length; si++) {
       if (!wmSetDone(ex.sets[si])) {
         const el = document.getElementById(`wm-set-${ei}-${si}`);
