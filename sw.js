@@ -1,5 +1,5 @@
-// HomeBody Service Worker v7 - forces cache refresh
-const CACHE = 'homebody-v10';
+// HomeBody Service Worker v8 - forces cache refresh
+const CACHE = 'homebody-v11';
 const ASSETS = ['manifest.json'];
 
 self.addEventListener('install', event => {
